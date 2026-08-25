@@ -5,6 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PC-Desktop</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Stili integrati per l'immagine all'interno della scheda quadrata */
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+    }
+    
+    .product-img-container {
+      width: 100%;
+      height: 140px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      overflow: hidden;
+      background-color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .product-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .product-title {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+      color: #1e293b;
+    }
+
+    .product-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin: 0 0 10px 0;
+      overflow-y: auto;
+      flex-grow: 1;
+    }
+  </style>
 </head>
 <body>
   <header class="main-header">
@@ -29,27 +77,50 @@
   <script>
     const currentCategory = 'desktop';
 
+    // Ricarica senza cache per vedere subito i nuovi inserimenti dell'admin
     fetch('prodotti.json?cache=' + Date.now())
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
-        const items = (data.items || []).filter(p => p.category === currentCategory);
+        
+        // Supporta sia il formato [ {..} ] che { items: [ {..} ] }
+        const allItems = Array.isArray(data) ? data : (data.items || []);
+        
+        // Filtra per categoria attuale
+        const items = allItems.filter(p => p.categoria === currentCategory || p.category === currentCategory);
 
         if (items.length === 0) {
-          grid.innerHTML = '<p>Nessun prodotto disponibile.</p>';
+          grid.innerHTML = '<p>Nessun prodotto disponibile in questa categoria.</p>';
           return;
         }
 
-        grid.innerHTML = items.map(p => `
-          <div class="product-card">
-            <h3>${p.title}</h3>
-            <p>${p.desc}</p>
-            <a href="${p.pdf}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>
-          </div>
-        `).join('');
+        grid.innerHTML = items.map(p => {
+          // Normalizzazione nomi campi (supporta sia nuovo che vecchio admin)
+          const title = p.nome || p.title || 'Prodotto senza titolo';
+          const desc = p.descrizione || p.desc || '';
+          const pdfPath = p.pdf || '#';
+          const imgPath = p.immagine || p.img || '';
+
+          // Blocco HTML immagine (se presente mostra l'immagine, altrimenti un segnaposto)
+          const imageHtml = imgPath 
+            ? `<div class="product-img-container"><img src="${imgPath}" alt="${title}" class="product-img" onerror="this.parentElement.style.display='none'"></div>`
+            : `<div class="product-img-container"><span style="color:#94a3b8; font-size:12px;">Nessuna immagine</span></div>`;
+
+          return `
+            <div class="product-card">
+              ${imageHtml}
+              <div class="product-info">
+                <h3 class="product-title">${title}</h3>
+                <p class="product-desc">${desc}</p>
+              </div>
+              <a href="${pdfPath}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>
+            </div>
+          `;
+        }).join('');
       })
-      .catch(() => {
-        document.getElementById('products-grid').innerHTML = '<p>Nessun prodotto ancora inserito.</p>';
+      .catch(err => {
+        console.error(err);
+        document.getElementById('products-grid').innerHTML = '<p>Nessun prodotto ancora inserito o file prodotti.json non trovato.</p>';
       });
   </script>
 </body>
