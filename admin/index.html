@@ -3,179 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pannello Amministratore</title>
+  <title>Pannello Amministrazione</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f9; padding: 20px; }
-    .box { background: white; max-width: 500px; margin: 20px auto; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    .field { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; }
-    input, select, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-    button { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
-    button:disabled { background: #ccc; }
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.5; }
+    .card { border: 1px solid #ddd; border-radius: 8px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: bold; margin-bottom: 6px; }
+    input[type="text"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    button { background: #0066cc; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+    button:hover { background: #0052a3; }
+    #status { margin-top: 16px; font-weight: bold; padding: 10px; border-radius: 4px; display: none; }
+    .success { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
+    .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .hidden { display: none; }
-    .msg { margin-top: 15px; padding: 10px; border-radius: 4px; display: none; }
-    .msg.success { background: #d4edda; color: #155724; }
-    .msg.error { background: #f8d7da; color: #721c24; }
   </style>
 </head>
 <body>
 
-  <!-- LOGIN GITHUB -->
-  <div id="login-box" class="box">
+  <div class="card" id="loginCard">
     <h2>Accesso Admin</h2>
-    <div class="field">
-      <label>GitHub Username:</label>
-      <input type="text" id="gh-user" placeholder="es. MarioRossi">
+    <div class="form-group">
+      <label for="username">GitHub Username</label>
+      <input type="text" id="username" placeholder="es. mapoinformatica">
     </div>
-    <div class="field">
-      <label>Nome Repository:</label>
-      <input type="text" id="gh-repo" placeholder="es. mio-sito">
+    <div class="form-group">
+      <label for="repo">Nome Repository</label>
+      <input type="text" id="repo" placeholder="es. catalogo-prodotti">
     </div>
-    <div class="field">
-      <label>GitHub Personal Access Token:</label>
-      <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx">
+    <div class="form-group">
+      <label for="token">Personal Access Token (ghp_...)</label>
+      <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxx">
     </div>
-    <button onclick="saveCredentials()">Accedi</button>
+    <button onclick="salvaCredenziali()">Accedi</button>
   </div>
 
-  <!-- PANNELLO INSERIMENTO -->
-  <div id="admin-panel" class="box hidden">
-    <h2>Inserisci Prodotto</h2>
-    
-    <div class="field">
-      <label>Nome Prodotto:</label>
-      <input type="text" id="title" placeholder="Es. Workstation PC">
-    </div>
-
-    <div class="field">
-      <label>Categoria:</label>
-      <select id="category">
-        <option value="desktop">PC-Desktop</option>
-        <option value="notebook">Notebook</option>
-        <option value="accessori">Accessori</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Descrizione:</label>
-      <textarea id="desc" rows="4" placeholder="Inserisci la descrizione completa..."></textarea>
-    </div>
-
-    <div class="field">
-      <label>File Scheda Tecnica (PDF):</label>
-      <input type="file" id="pdf-file" accept="application/pdf">
-    </div>
-
-    <button id="btn-submit" onclick="uploadProduct()">Pubblica Prodotto</button>
-    <div id="status-msg" class="msg"></div>
-    <br><br>
-    <a href="#" onclick="logout()" style="color: #666; font-size: 12px;">Disconnetti</a>
+  <div class="card hidden" id="adminCard">
+    <h2>Pubblica Nuovo Prodotto</h2>
+    <form id="productForm" onsubmit="pubblicaProdotto(event)">
+      <div class="form-group">
+        <label for="nome">Nome Prodotto</label>
+        <input type="text" id="nome" required>
+      </div>
+      <div class="form-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria" required>
+          <option value="desktop">PC Desktop</option>
+          <option value="notebook">Notebook</option>
+          <option value="accessori">Accessori</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="descrizione">Descrizione</label>
+        <textarea id="descrizione" rows="4" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="immagine">Immagine Prodotto (JPG, PNG, WEBP)</label>
+        <input type="file" id="immagine" accept="image/*" required>
+      </div>
+      <div class="form-group">
+        <label for="pdf">Scheda Tecnica PDF</label>
+        <input type="file" id="pdf" accept="application/pdf" required>
+      </div>
+      <button type="submit" id="submitBtn">Pubblica Prodotto</button>
+    </form>
+    <div id="status"></div>
   </div>
 
   <script>
-    let config = { user: '', repo: '', token: '' };
-
-    window.onload = function() {
-      const saved = localStorage.getItem('gh_admin_cfg');
-      if (saved) {
-        config = JSON.parse(saved);
-        showPanel();
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("gh_token")) {
+        document.getElementById("loginCard").classList.add("hidden");
+        document.getElementById("adminCard").classList.remove("hidden");
       }
-    };
+    });
 
-    function saveCredentials() {
-      config.user = document.getElementById('gh-user').value.trim();
-      config.repo = document.getElementById('gh-repo').value.trim();
-      config.token = document.getElementById('gh-token').value.trim();
+    function salvaCredenziali() {
+      const u = document.getElementById("username").value.trim();
+      const r = document.getElementById("repo").value.trim();
+      const t = document.getElementById("token").value.trim();
 
-      if (!config.user || !config.repo || !config.token) {
-        alert("Compila tutti i campi di accesso!");
-        return;
-      }
-      localStorage.setItem('gh_admin_cfg', JSON.stringify(config));
-      showPanel();
+      if (!u || !r || !t) return alert("Compila tutti i campi!");
+
+      localStorage.setItem("gh_user", u);
+      localStorage.setItem("gh_repo", r);
+      localStorage.setItem("gh_token", t);
+
+      document.getElementById("loginCard").classList.add("hidden");
+      document.getElementById("adminCard").classList.remove("hidden");
     }
 
-    function logout() {
-      localStorage.removeItem('gh_admin_cfg');
-      location.reload();
-    }
-
-    function showPanel() {
-      document.getElementById('login-box').classList.add('hidden');
-      document.getElementById('admin-panel').classList.remove('hidden');
-    }
-
-    function showMsg(text, isError = false) {
-      const msg = document.getElementById('status-msg');
-      msg.className = 'msg ' + (isError ? 'error' : 'success');
-      msg.innerText = text;
-      msg.style.display = 'block';
-    }
-
-    async function uploadProduct() {
-      const title = document.getElementById('title').value;
-      const category = document.getElementById('category').value;
-      const desc = document.getElementById('desc').value;
-      const fileInput = document.getElementById('pdf-file');
-      const btn = document.getElementById('btn-submit');
-
-      if (!title || !desc || fileInput.files.length === 0) {
-        showMsg("Compila tutti i campi e seleziona un file PDF.", true);
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const cleanFileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const pdfPath = `pdf/${cleanFileName}`;
-
-      btn.disabled = true;
-      showMsg("Caricamento PDF in corso...");
-
-      try {
-        // 1. Carica il file PDF su GitHub
-        const pdfBase64 = await toBase64(file);
-        await githubApiPut(pdfPath, pdfBase64, `Upload PDF: ${cleanFileName}`);
-
-        showMsg("Aggiornamento catalogo prodotti...");
-
-        // 2. Recupera prodotti.json o ne crea uno nuovo
-        let catalog = { items: [] };
-        let sha = null;
-
-        try {
-          const res = await githubApiGet('prodotti.json');
-          sha = res.sha;
-          catalog = JSON.parse(atob(res.content));
-        } catch (e) {
-          console.log("File prodotti.json non ancora esistente, creazione in corso.");
-        }
-
-        // 3. Aggiunge il nuovo prodotto
-        catalog.items.push({
-          title: title,
-          category: category,
-          desc: desc,
-          pdf: pdfPath
-        });
-
-        // 4. Salva prodotti.json su GitHub
-        const jsonContent = btoa(unescape(encodeURIComponent(JSON.stringify(catalog, null, 2))));
-        await githubApiPut('prodotti.json', jsonContent, `Aggiunto prodotto: ${title}`, sha);
-
-        showMsg("Prodotto e PDF pubblicati con successo!");
-        document.getElementById('title').value = '';
-        document.getElementById('desc').value = '';
-        fileInput.value = '';
-
-      } catch (err) {
-        showMsg("Errore durante il salvataggio: " + err.message, true);
-      } finally {
-        btn.disabled = false;
-      }
-    }
-
-    function toBase64(file) {
+    async function fileToBase64(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
@@ -184,30 +101,108 @@
       });
     }
 
-    async function githubApiGet(path) {
-      const url = `https://api.github.com/repos/${config.user}/${config.repo}/contents/${path}`;
-      const res = await fetch(url, {
-        headers: { 'Authorization': `token ${config.token}` }
-      });
-      if (!res.ok) throw new Error("Impossibile leggere " + path);
-      return await res.json();
-    }
+    async function caricaFileGitHub(path, contentBase64, message) {
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
 
-    async function githubApiPut(path, contentBase64, message, sha = null) {
-      const url = `https://api.github.com/repos/${config.user}/${config.repo}/contents/${path}`;
+      let sha = null;
+      try {
+        const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+        if (res.ok) {
+          const data = await res.json();
+          sha = data.sha;
+        }
+      } catch (e) {}
+
       const body = { message, content: contentBase64 };
       if (sha) body.sha = sha;
 
-      const res = await fetch(url, {
-        method: 'PUT',
+      const response = await fetch(url, {
+        method: "PUT",
         headers: {
-          'Authorization': `token ${config.token}`,
-          'Content-Type': 'application/json'
+          "Authorization": `token ${token}`,
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(body)
       });
-      if (!res.ok) throw new Error("Errore durante la scrittura di " + path);
-      return await res.json();
+
+      if (!response.ok) throw new Error(`Errore caricamento ${path}`);
+      return await response.json();
+    }
+
+    async function pubblicaProdotto(e) {
+      e.preventDefault();
+      const status = document.getElementById("status");
+      const btn = document.getElementById("submitBtn");
+
+      status.className = "";
+      status.style.display = "block";
+      status.textContent = "Caricamento file in corso...";
+      btn.disabled = true;
+
+      try {
+        const user = localStorage.getItem("gh_user");
+        const repo = localStorage.getItem("gh_repo");
+        const token = localStorage.getItem("gh_token");
+
+        const nome = document.getElementById("nome").value.trim();
+        const categoria = document.getElementById("categoria").value;
+        const descrizione = document.getElementById("descrizione").value.trim();
+        const filePdf = document.getElementById("pdf").files[0];
+        const fileImg = document.getElementById("immagine").files[0];
+
+        const timestamp = Date.now();
+        const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
+        const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+
+        // 1. Carica Immagine
+        const imgBase64 = await fileToBase64(fileImg);
+        await caricaFileGitHub(imgPath, imgBase64, `Upload Immagine: ${fileImg.name}`);
+
+        // 2. Carica PDF
+        const pdfBase64 = await fileToBase64(filePdf);
+        await caricaFileGitHub(pdfPath, pdfBase64, `Upload PDF: ${filePdf.name}`);
+
+        // 3. Scarica o inizializza prodotti.json
+        let prodotti = [];
+        let jsonSha = null;
+        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
+
+        try {
+          const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
+          if (res.ok) {
+            const data = await res.json();
+            jsonSha = data.sha;
+            prodotti = JSON.parse(atob(data.content));
+          }
+        } catch (e) {}
+
+        // 4. Aggiungi nuovo prodotto
+        prodotti.push({
+          id: timestamp,
+          nome,
+          categoria,
+          descrizione,
+          immagine: imgPath,
+          pdf: pdfPath
+        });
+
+        // 5. Salva prodotti.json aggiornato
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
+        await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
+
+        status.className = "success";
+        status.textContent = "Prodotto pubblicato con successo!";
+        document.getElementById("productForm").reset();
+
+      } catch (err) {
+        status.className = "error";
+        status.textContent = "Errore durante la pubblicazione: " + err.message;
+      } finally {
+        btn.disabled = false;
+      }
     }
   </script>
 </body>
