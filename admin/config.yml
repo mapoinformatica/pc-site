@@ -1,0 +1,23 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "pdf"
+public_folder: "pdf"
+
+collections:
+  - name: "prodotti"
+    label: "Schede Prodotti"
+    files:
+      - file: "prodotti.json"
+        label: "Lista Prodotti"
+        name: "catalogo"
+        fields:
+          - label: "Prodotti"
+            name: "items"
+            widget: "list"
+            fields:
+              - {label: "Nome Prodotto", name: "title", widget: "string"}
+              - {label: "Categoria", name: "category", widget: "select", options: ["desktop", "notebook", "accessori"]}
+              - {label: "Descrizione", name: "desc", widget: "text"}
+              - {label: "Scheda Tecnica PDF", name: "pdf", widget: "file"}
