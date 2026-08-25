@@ -6,5 +6,13 @@
     "descrizione": "test",
     "immagine": "img/1787675118726_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787675118726_desktop.pdf"
+  },
+  {
+    "id": 1787675177253,
+    "nome": "Hp",
+    "categoria": "desktop",
+    "descrizione": "prova",
+    "immagine": "img/1787675177253_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787675177253_desktop.pdf"
   }
 ]
