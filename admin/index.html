@@ -109,6 +109,9 @@
   </div>
 
   <script>
+    // Array globale in memoria per gestire l'interfaccia all'istante
+    let prodottiGlobali = [];
+
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("gh_token")) {
         mostraPannello();
@@ -207,6 +210,57 @@
       }
     }
 
+    async function caricaListaProdotti() {
+      const container = document.getElementById("listaProdotti");
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main&cache=` + Date.now(), {
+          headers: { "Authorization": `token ${token}` }
+        });
+
+        if (!res.ok) {
+          container.textContent = "Nessun prodotto trovato.";
+          return;
+        }
+
+        const data = await res.json();
+        const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        prodottiGlobali = Array.isArray(content) ? content : (content.items || []);
+
+        renderizzaTabella();
+
+      } catch (e) {
+        container.textContent = "Errore durante il caricamento della lista prodotti.";
+      }
+    }
+
+    // Funzione dedicata a disegnare la lista a schermo basandosi sull'array in memoria
+    function renderizzaTabella() {
+      const container = document.getElementById("listaProdotti");
+
+      if (prodottiGlobali.length === 0) {
+        container.textContent = "Nessun prodotto presente nel catalogo.";
+        return;
+      }
+
+      container.innerHTML = prodottiGlobali.map((p, index) => {
+        const title = p.nome || p.title || "Senza titolo";
+        const cat = p.categoria || p.category || "";
+        return `
+          <div class="product-list-item">
+            <div>
+              <strong>${title}</strong>
+              <span class="badge">${cat}</span>
+            </div>
+            <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
+          </div>
+        `;
+      }).join('');
+    }
+
     async function pubblicaProdotto(e) {
       e.preventDefault();
       const status = document.getElementById("status");
@@ -232,110 +286,46 @@
         const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
         const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
 
-        // 1. Carica Immagine e PDF
+        // 1. Carica Immagine e PDF (lasciato in sequenza come nella tua versione stabile)
         await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
         await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
 
-        // 2. Scarica prodotti.json
-        let prodotti = [];
-        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
-        try {
-          const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
-          if (res.ok) {
-            const data = await res.json();
-            const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            prodotti = Array.isArray(content) ? content : (content.items || []);
-          }
-        } catch (e) {}
-
-        // 3. Aggiungi nuovo prodotto
-        prodotti.push({
+        // 2. Crea il nuovo oggetto prodotto
+        const nuovoProdotto = {
           id: timestamp,
           nome,
           categoria,
           descrizione,
           immagine: imgPath,
           pdf: pdfPath
-        });
+        };
 
-        // 4. Salva prodotti.json
-        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
+        // 3. Aggiungi subito all'array in memoria e AGGIORNA LA TABELLA ALL'ISTANTE
+        prodottiGlobali.push(nuovoProdotto);
+        renderizzaTabella();
+
+        // 4. Salva il file prodotti.json aggiornato su GitHub
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
 
         status.className = "success";
         status.textContent = "Prodotto pubblicato con successo!";
         document.getElementById("productForm").reset();
-        caricaListaProdotti();
 
       } catch (err) {
         status.className = "error";
         status.textContent = "Errore durante la pubblicazione: " + err.message;
+        caricaListaProdotti(); // Ricarica da GitHub in caso di errore
       } finally {
         btn.disabled = false;
-      }
-    }
-
-    async function caricaListaProdotti() {
-      const container = document.getElementById("listaProdotti");
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main`, {
-          headers: { "Authorization": `token ${token}` }
-        });
-
-        if (!res.ok) {
-          container.textContent = "Nessun prodotto trovato.";
-          return;
-        }
-
-        const data = await res.json();
-        const prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        const items = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
-
-        if (items.length === 0) {
-          container.textContent = "Nessun prodotto presente nel catalogo.";
-          return;
-        }
-
-        container.innerHTML = items.map((p, index) => {
-          const title = p.nome || p.title || "Senza titolo";
-          const cat = p.categoria || p.category || "";
-          return `
-            <div class="product-list-item">
-              <div>
-                <strong>${title}</strong>
-                <span class="badge">${cat}</span>
-              </div>
-              <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
-            </div>
-          `;
-        }).join('');
-
-      } catch (e) {
-        container.textContent = "Errore durante il caricamento della lista prodotti.";
       }
     }
 
     async function eliminaProdotto(index) {
       if (!confirm("Sei sicuro di voler eliminare questo prodotto e i relativi file (immagine e PDF)?")) return;
 
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
-
       try {
-        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
-        const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
-        if (!res.ok) throw new Error("Impossibile recuperare prodotti.json");
-
-        const data = await res.json();
-        let prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        const lista = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
-
-        const prodottoDaEliminare = lista[index];
+        const prodottoDaEliminare = prodottiGlobali[index];
 
         if (prodottoDaEliminare) {
           const imgPath = prodottoDaEliminare.immagine || prodottoDaEliminare.img;
@@ -349,16 +339,17 @@
           }
         }
 
-        lista.splice(index, 1);
+        // 1. Rimuovi dall'array in memoria e AGGIORNA SUBITO LA TABELLA
+        prodottiGlobali.splice(index, 1);
+        renderizzaTabella();
 
-        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
+        // 2. Salva il file prodotti.json aggiornato su GitHub
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
-
-        alert("Prodotto e relativi file eliminati con successo!");
-        caricaListaProdotti();
 
       } catch (err) {
         alert("Errore durante l'eliminazione: " + err.message);
+        caricaListaProdotti(); // Ricarica da GitHub in caso di errore
       }
     }
   </script>
