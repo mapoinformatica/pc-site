@@ -1,7 +1,8 @@
 backend:
   name: github
-  repo: TUO-USERNAME-GITHUB/NOME-REPOSITORY # Sostituisci con il tuo username e il nome della repository
+  repo: TUO-USERNAME-GITHUB/NOME-REPOSITORY
   branch: main
+  base_url: https://decap-bridge.vercel.app # Proxy gratuito per l'autenticazione GitHub
 
 media_folder: "pdf"
 public_folder: "pdf"
