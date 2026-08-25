@@ -109,6 +109,9 @@
   </div>
 
   <script>
+    // Array globale in memoria per gestire l'interfaccia all'istante
+    let prodottiGlobali = [];
+
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("gh_token")) {
         mostraPannello();
@@ -207,6 +210,56 @@
       }
     }
 
+    async function caricaListaProdotti() {
+      const container = document.getElementById("listaProdotti");
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main&cache=` + Date.now(), {
+          headers: { "Authorization": `token ${token}` }
+        });
+
+        if (!res.ok) {
+          container.textContent = "Nessun prodotto trovato.";
+          return;
+        }
+
+        const data = await res.json();
+        const contenuto = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        
+        prodottiGlobali = Array.isArray(contenuto) ? contenuto : (contenuto.items || []);
+        renderizzaTabella();
+
+      } catch (e) {
+        container.textContent = "Errore durante il caricamento della lista prodotti.";
+      }
+    }
+
+    function renderizzaTabella() {
+      const container = document.getElementById("listaProdotti");
+      
+      if (prodottiGlobali.length === 0) {
+        container.textContent = "Nessun prodotto presente nel catalogo.";
+        return;
+      }
+
+      container.innerHTML = prodottiGlobali.map((p, index) => {
+        const title = p.nome || p.title || "Senza titolo";
+        const cat = p.categoria || p.category || "";
+        return `
+          <div class="product-list-item">
+            <div>
+              <strong>${title}</strong>
+              <span class="badge">${cat}</span>
+            </div>
+            <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
+          </div>
+        `;
+      }).join('');
+    }
+
     async function pubblicaProdotto(e) {
       e.preventDefault();
       const status = document.getElementById("status");
@@ -218,10 +271,6 @@
       btn.disabled = true;
 
       try {
-        const user = localStorage.getItem("gh_user");
-        const repo = localStorage.getItem("gh_repo");
-        const token = localStorage.getItem("gh_token");
-
         const nome = document.getElementById("nome").value.trim();
         const categoria = document.getElementById("categoria").value;
         const descrizione = document.getElementById("descrizione").value.trim();
@@ -232,133 +281,71 @@
         const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
         const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
 
-        // 1. Carica Immagine e PDF
-        await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
-        await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+        // 1. Carica Immagine e PDF su GitHub in parallelo
+        await Promise.all([
+          caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`),
+          caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`)
+        ]);
 
-        // 2. Scarica prodotti.json
-        let prodotti = [];
-        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
-        try {
-          const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
-          if (res.ok) {
-            const data = await res.json();
-            const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            prodotti = Array.isArray(content) ? content : (content.items || []);
-          }
-        } catch (e) {}
-
-        // 3. Aggiungi nuovo prodotto
-        prodotti.push({
+        // 2. Crea il nuovo oggetto prodotto
+        const nuovoProdotto = {
           id: timestamp,
           nome,
           categoria,
           descrizione,
           immagine: imgPath,
           pdf: pdfPath
-        });
+        };
 
-        // 4. Salva prodotti.json
-        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
+        // 3. Aggiungi all'array in memoria SUBITO
+        prodottiGlobali.push(nuovoProdotto);
+        renderizzaTabella(); // Aggiorna l'interfaccia all'istante
+
+        // 4. Invia il file prodotti.json aggiornato a GitHub in background
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
 
         status.className = "success";
         status.textContent = "Prodotto pubblicato con successo!";
         document.getElementById("productForm").reset();
-        caricaListaProdotti();
 
       } catch (err) {
         status.className = "error";
         status.textContent = "Errore durante la pubblicazione: " + err.message;
+        caricaListaProdotti(); // Ripristina in caso di errore
       } finally {
         btn.disabled = false;
       }
     }
 
-    async function caricaListaProdotti() {
-      const container = document.getElementById("listaProdotti");
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
-
-      try {
-        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main`, {
-          headers: { "Authorization": `token ${token}` }
-        });
-
-        if (!res.ok) {
-          container.textContent = "Nessun prodotto trovato.";
-          return;
-        }
-
-        const data = await res.json();
-        const prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        const items = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
-
-        if (items.length === 0) {
-          container.textContent = "Nessun prodotto presente nel catalogo.";
-          return;
-        }
-
-        container.innerHTML = items.map((p, index) => {
-          const title = p.nome || p.title || "Senza titolo";
-          const cat = p.categoria || p.category || "";
-          return `
-            <div class="product-list-item">
-              <div>
-                <strong>${title}</strong>
-                <span class="badge">${cat}</span>
-              </div>
-              <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
-            </div>
-          `;
-        }).join('');
-
-      } catch (e) {
-        container.textContent = "Errore durante il caricamento della lista prodotti.";
-      }
-    }
-
     async function eliminaProdotto(index) {
-      if (!confirm("Sei sicuro di voler eliminare questo prodotto e i relativi file (immagine e PDF)?")) return;
-
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
+      if (!confirm("Sei sicuro di voler eliminare questo prodotto e i relativi file?")) return;
 
       try {
-        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
-        const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
-        if (!res.ok) throw new Error("Impossibile recuperare prodotti.json");
-
-        const data = await res.json();
-        let prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        const lista = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
-
-        const prodottoDaEliminare = lista[index];
+        const prodottoDaEliminare = prodottiGlobali[index];
 
         if (prodottoDaEliminare) {
           const imgPath = prodottoDaEliminare.immagine || prodottoDaEliminare.img;
           const pdfPath = prodottoDaEliminare.pdf;
 
-          if (imgPath) {
-            await eliminaFileGitHub(imgPath, `Eliminata immagine per prodotto: ${prodottoDaEliminare.nome || prodottoDaEliminare.title}`);
-          }
-          if (pdfPath) {
-            await eliminaFileGitHub(pdfPath, `Eliminato PDF per prodotto: ${prodottoDaEliminare.nome || prodottoDaEliminare.title}`);
-          }
+          // 1. Rimuovi i file fisici da GitHub in parallelo
+          await Promise.all([
+            imgPath ? eliminaFileGitHub(imgPath, `Eliminata immagine`) : Promise.resolve(),
+            pdfPath ? eliminaFileGitHub(pdfPath, `Eliminato PDF`) : Promise.resolve()
+          ]);
         }
 
-        lista.splice(index, 1);
+        // 2. Rimuovi dall'array in memoria SUBITO e aggiorna la tabella
+        prodottiGlobali.splice(index, 1);
+        renderizzaTabella(); // Interfaccia aggiornata istantaneamente
 
-        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
-        await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
-
-        alert("Prodotto e relativi file eliminati con successo!");
-        caricaListaProdotti();
+        // 3. Invia il file prodotti.json aggiornato a GitHub in background
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
+        await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto`);
 
       } catch (err) {
         alert("Errore durante l'eliminazione: " + err.message);
+        caricaListaProdotti(); // Ripristina in caso di errore
       }
     }
   </script>
