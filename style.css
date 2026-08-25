@@ -1,40 +1,4 @@
-/* Reset di base e variabili colore */
-:root {
-  --bg-color: #f8fafc;
-  --card-bg: #ffffff;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --accent: #2563eb;
-  --accent-hover: #1d4ed8;
-  --border-color: #e2e8f0;
-  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.02);
-  --radius: 12px;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  line-height: 1.6;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 20px;
-  width: 100%;
-}
-
-/* Header */
+/* Header con posizionamento distribuito */
 .header {
   background: var(--card-bg);
   border-bottom: 1px solid var(--border-color);
@@ -46,7 +10,7 @@ body {
 
 .header-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Logo a sinistra, Nav a destra */
   align-items: center;
 }
 
@@ -55,131 +19,40 @@ body {
   align-items: center;
   gap: 10px;
   font-weight: 700;
-  font-size: 1.125rem;
+  font-size: 1.2rem;
 }
 
-/* Pulsanti e Link */
+/* Gruppo Pulsanti a Destra */
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+}
+
 .btn {
   display: inline-block;
-  padding: 8px 18px;
+  padding: 10px 20px;
   border-radius: 8px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.btn-secondary {
-  background-color: #eff6ff;
-  color: var(--accent);
-}
-
-.btn-secondary:hover {
-  background-color: #dbeafe;
-}
-
-/* Hero Section */
-.hero {
-  text-align: center;
-  padding: 40px 0 24px;
-}
-
-.hero h1 {
-  font-size: 2.25rem;
-  letter-spacing: -0.025em;
-  margin-bottom: 8px;
-}
-
-.hero p {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-}
-
-/* PDF Viewer Block */
-.pdf-wrapper {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  margin-bottom: 40px;
-}
-
-.pdf-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.pdf-header h2 {
-  font-size: 1.1rem;
   font-weight: 600;
-}
-
-.link-external {
-  color: var(--accent);
+  font-size: 0.95rem;
   text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.link-external:hover {
-  text-decoration: underline;
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
 }
 
-.pdf-frame-container {
-  width: 100%;
-  height: 700px;
-  background-color: #f1f5f9;
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
-.pdf-frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Griglia Schede */
-.cards-section {
+/* Distanziamento per le sezioni PDF */
+.pdf-wrapper {
+  scroll-margin-top: 90px; /* Evita che l'header fisso copra la sezione quando si clicca sul pulsante */
   margin-bottom: 40px;
 }
-
-.cards-section h3 {
-  font-size: 1.25rem;
-  margin-bottom: 16px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.card {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 20px;
-  box-shadow: var(--shadow);
-}
-
-.card-icon {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-
-.card h4 {
-  margin-bottom: 6px;
-}
-
-.card p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: 12px;
-}
-
-.card-link {
   color: var(--accent);
   text-decoration: none;
   font-size: 0.9rem;
