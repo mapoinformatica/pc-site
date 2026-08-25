@@ -176,6 +176,37 @@
       return await response.json();
     }
 
+    async function eliminaFileGitHub(path, message) {
+      if (!path || path === '#' || path.startsWith('http')) return;
+
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
+      try {
+        const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+        if (!res.ok) return;
+
+        const data = await res.json();
+        const sha = data.sha;
+
+        await fetch(url, {
+          method: "DELETE",
+          headers: {
+            "Authorization": `token ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: message,
+            sha: sha
+          })
+        });
+      } catch (err) {
+        console.warn(`Impossibile eliminare il file ${path}:`, err);
+      }
+    }
+
     async function pubblicaProdotto(e) {
       e.preventDefault();
       const status = document.getElementById("status");
@@ -289,7 +320,7 @@
     }
 
     async function eliminaProdotto(index) {
-      if (!confirm("Sei sicuro di voler eliminare questo prodotto?")) return;
+      if (!confirm("Sei sicuro di voler eliminare questo prodotto e i relativi file (immagine e PDF)?")) return;
 
       const user = localStorage.getItem("gh_user");
       const repo = localStorage.getItem("gh_repo");
@@ -302,18 +333,28 @@
 
         const data = await res.json();
         let prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-        
-        // Gestisci entrambi i formati di file prodotti.json
-        if (Array.isArray(prodotti)) {
-          prodotti.splice(index, 1);
-        } else if (prodotti.items) {
-          prodotti.items.splice(index, 1);
+        const lista = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
+
+        const prodottoDaEliminare = lista[index];
+
+        if (prodottoDaEliminare) {
+          const imgPath = prodottoDaEliminare.immagine || prodottoDaEliminare.img;
+          const pdfPath = prodottoDaEliminare.pdf;
+
+          if (imgPath) {
+            await eliminaFileGitHub(imgPath, `Eliminata immagine per prodotto: ${prodottoDaEliminare.nome || prodottoDaEliminare.title}`);
+          }
+          if (pdfPath) {
+            await eliminaFileGitHub(pdfPath, `Eliminato PDF per prodotto: ${prodottoDaEliminare.nome || prodottoDaEliminare.title}`);
+          }
         }
+
+        lista.splice(index, 1);
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
 
-        alert("Prodotto eliminato con successo!");
+        alert("Prodotto e relativi file eliminati con successo!");
         caricaListaProdotti();
 
       } catch (err) {
