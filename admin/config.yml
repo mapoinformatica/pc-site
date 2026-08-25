@@ -1,5 +1,6 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: TUO-USERNAME-GITHUB/NOME-REPOSITORY # Sostituisci con il tuo username e il nome della repository
   branch: main
 
 media_folder: "pdf"
