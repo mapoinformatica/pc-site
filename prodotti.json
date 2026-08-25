@@ -1,1 +1,10 @@
-
+{
+  "items": [
+    {
+      "title": "Dell mini pc",
+      "category": "desktop",
+      "desc": "i5\n8gb\n256 ssd",
+      "pdf": "pdf/1787670640753_desktop.pdf"
+    }
+  ]
+}
