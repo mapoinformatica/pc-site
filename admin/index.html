@@ -5,21 +5,53 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pannello Amministrazione</title>
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; line-height: 1.5; }
-    .card { border: 1px solid #ddd; border-radius: 8px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    body { font-family: system-ui, sans-serif; max-width: 650px; margin: 30px auto; padding: 20px; line-height: 1.5; background-color: #f8f9fa; }
+    .card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .form-group { margin-bottom: 16px; }
     label { display: block; font-weight: bold; margin-bottom: 6px; }
     input[type="text"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
     button { background: #0066cc; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
     button:hover { background: #0052a3; }
+    button:disabled { background: #ccc; }
     #status { margin-top: 16px; font-weight: bold; padding: 10px; border-radius: 4px; display: none; }
     .success { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
     .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .hidden { display: none; }
+
+    /* Stili per la lista eliminazione */
+    .product-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    .product-list-item:last-child { border-bottom: none; }
+    .btn-delete {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: auto;
+      font-size: 0.85rem;
+    }
+    .btn-delete:hover { background: #b91c1c; }
+    .badge {
+      background: #e2e8f0;
+      color: #475569;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-left: 6px;
+    }
   </style>
 </head>
 <body>
 
+  <!-- LOGIN CARD -->
   <div class="card" id="loginCard">
     <h2>Accesso Admin</h2>
     <div class="form-group">
@@ -37,6 +69,7 @@
     <button onclick="salvaCredenziali()">Accedi</button>
   </div>
 
+  <!-- ADMIN CARD -->
   <div class="card hidden" id="adminCard">
     <h2>Pubblica Nuovo Prodotto</h2>
     <form id="productForm" onsubmit="pubblicaProdotto(event)">
@@ -69,11 +102,16 @@
     <div id="status"></div>
   </div>
 
+  <!-- LISTA PRODOTTI PER ELIMINAZIONE -->
+  <div class="card hidden" id="listCard">
+    <h2>Gestisci / Elimina Prodotti</h2>
+    <div id="listaProdotti">Caricamento prodotti...</div>
+  </div>
+
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("gh_token")) {
-        document.getElementById("loginCard").classList.add("hidden");
-        document.getElementById("adminCard").classList.remove("hidden");
+        mostraPannello();
       }
     });
 
@@ -88,8 +126,14 @@
       localStorage.setItem("gh_repo", r);
       localStorage.setItem("gh_token", t);
 
+      mostraPannello();
+    }
+
+    function mostraPannello() {
       document.getElementById("loginCard").classList.add("hidden");
       document.getElementById("adminCard").classList.remove("hidden");
+      document.getElementById("listCard").classList.remove("hidden");
+      caricaListaProdotti();
     }
 
     async function fileToBase64(file) {
@@ -157,29 +201,23 @@
         const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
         const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
 
-        // 1. Carica Immagine
-        const imgBase64 = await fileToBase64(fileImg);
-        await caricaFileGitHub(imgPath, imgBase64, `Upload Immagine: ${fileImg.name}`);
+        // 1. Carica Immagine e PDF
+        await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
+        await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
 
-        // 2. Carica PDF
-        const pdfBase64 = await fileToBase64(filePdf);
-        await caricaFileGitHub(pdfPath, pdfBase64, `Upload PDF: ${filePdf.name}`);
-
-        // 3. Scarica o inizializza prodotti.json
+        // 2. Scarica prodotti.json
         let prodotti = [];
-        let jsonSha = null;
         const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
-
         try {
           const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
           if (res.ok) {
             const data = await res.json();
-            jsonSha = data.sha;
-            prodotti = JSON.parse(atob(data.content));
+            const content = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            prodotti = Array.isArray(content) ? content : (content.items || []);
           }
         } catch (e) {}
 
-        // 4. Aggiungi nuovo prodotto
+        // 3. Aggiungi nuovo prodotto
         prodotti.push({
           id: timestamp,
           nome,
@@ -189,19 +227,97 @@
           pdf: pdfPath
         });
 
-        // 5. Salva prodotti.json aggiornato
+        // 4. Salva prodotti.json
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
 
         status.className = "success";
         status.textContent = "Prodotto pubblicato con successo!";
         document.getElementById("productForm").reset();
+        caricaListaProdotti();
 
       } catch (err) {
         status.className = "error";
         status.textContent = "Errore durante la pubblicazione: " + err.message;
       } finally {
         btn.disabled = false;
+      }
+    }
+
+    async function caricaListaProdotti() {
+      const container = document.getElementById("listaProdotti");
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main`, {
+          headers: { "Authorization": `token ${token}` }
+        });
+
+        if (!res.ok) {
+          container.textContent = "Nessun prodotto trovato.";
+          return;
+        }
+
+        const data = await res.json();
+        const prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        const items = Array.isArray(prodotti) ? prodotti : (prodotti.items || []);
+
+        if (items.length === 0) {
+          container.textContent = "Nessun prodotto presente nel catalogo.";
+          return;
+        }
+
+        container.innerHTML = items.map((p, index) => {
+          const title = p.nome || p.title || "Senza titolo";
+          const cat = p.categoria || p.category || "";
+          return `
+            <div class="product-list-item">
+              <div>
+                <strong>${title}</strong>
+                <span class="badge">${cat}</span>
+              </div>
+              <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
+            </div>
+          `;
+        }).join('');
+
+      } catch (e) {
+        container.textContent = "Errore durante il caricamento della lista prodotti.";
+      }
+    }
+
+    async function eliminaProdotto(index) {
+      if (!confirm("Sei sicuro di voler eliminare questo prodotto?")) return;
+
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+
+      try {
+        const jsonUrl = `https://api.github.com/repos/${user}/${repo}/contents/prodotti.json`;
+        const res = await fetch(jsonUrl, { headers: { "Authorization": `token ${token}` } });
+        if (!res.ok) throw new Error("Impossibile recuperare prodotti.json");
+
+        const data = await res.json();
+        let prodotti = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+        
+        // Gestisci entrambi i formati di file prodotti.json
+        if (Array.isArray(prodotti)) {
+          prodotti.splice(index, 1);
+        } else if (prodotti.items) {
+          prodotti.items.splice(index, 1);
+        }
+
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodotti, null, 2))));
+        await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
+
+        alert("Prodotto eliminato con successo!");
+        caricaListaProdotti();
+
+      } catch (err) {
+        alert("Errore durante l'eliminazione: " + err.message);
       }
     }
   </script>
