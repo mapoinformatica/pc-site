@@ -6,13 +6,5 @@
     "descrizione": "CPU i5-8400\nRAM 8GB\nSSD 256GB",
     "immagine": "img/1787671184098_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787671184098_desktop.pdf"
-  },
-  {
-    "id": 1787671389676,
-    "nome": "a",
-    "categoria": "desktop",
-    "descrizione": "ddd",
-    "immagine": "img/1787671389676_jpg100-t3-scale100.jpg",
-    "pdf": "pdf/1787671389676_desktop.pdf"
   }
 ]
