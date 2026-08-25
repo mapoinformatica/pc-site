@@ -53,24 +53,3 @@
   scroll-margin-top: 90px; /* Evita che l'header fisso copra la sezione quando si clicca sul pulsante */
   margin-bottom: 40px;
 }
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-/* Footer */
-.footer {
-  margin-top: auto;
-  padding: 24px 0;
-  text-align: center;
-  color: var(--text-secondary);
-  font-size: 0.875rem;
-  border-top: 1px solid var(--border-color);
-}
-
-/* Responsive Tablet/Mobile */
-@media (max-width: 640px) {
-  .hero h1 { font-size: 1.75rem; }
-  .pdf-frame-container { height: 450px; }
-}
