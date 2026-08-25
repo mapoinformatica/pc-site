@@ -3,21 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Il Mio Sito Vetrina</title>
+  <title>Documenti e Risorse</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Font Google Inter per una tipografia moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <h1>Benvenuto nel mio archivio</h1>
-  <p>Qui sotto puoi consultare il documento ufficiale:</p>
+  <!-- Intestazione / Header -->
+  <header class="header">
+    <div class="container header-container">
+      <div class="logo">
+        <span class="logo-icon">📄</span>
+        <span class="logo-text">Archivio Digitale</span>
+      </div>
+      <a href="documento.pdf" download class="btn btn-secondary">Scarica PDF</a>
+    </div>
+  </header>
 
-  <!-- Viewer PDF Integrato -->
-  <div class="pdf-container">
-    <iframe src="OFFERTE PC ASSEMBLATI ULTRA 5 16GB.pdf" width="100%" height="600px">
-      Il tuo browser non supporta la visualizzazione dei PDF. 
-      <a href="documento.pdf">Clicca qui per scaricarlo.</a>
-    </iframe>
-  </div>
+  <main class="container">
+    <!-- Sezione Introduttiva -->
+    <section class="hero">
+      <h1>Consultazione Documenti</h1>
+      <p>Esplora e consulta il documento ufficiale direttamente online oppure scaricalo sul tuo dispositivo.</p>
+    </section>
+
+    <!-- Viewer PDF Principale -->
+    <section class="pdf-wrapper">
+      <div class="pdf-header">
+        <h2>Documento Principale</h2>
+        <a href="documento.pdf" target="_blank" class="link-external">Apri a schermo intero ↗</a>
+      </div>
+      <div class="pdf-frame-container">
+        <iframe src="documento.pdf#toolbar=1" class="pdf-frame">
+          Il tuo browser non supporta la visualizzazione integrata dei PDF. 
+          <a href="documento.pdf">Clicca qui per scaricare il file.</a>
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Griglia Documenti Aggiuntivi (Opzionale) -->
+    <section class="cards-section">
+      <h3>Altri Documenti</h3>
+      <div class="grid">
+        <div class="card">
+          <div class="card-icon">📋</div>
+          <h4>Allegato Tecnico</h4>
+          <p>Specifiche di dettaglio e note di approfondimento.</p>
+          <a href="#" class="card-link">Visualizza file →</a>
+        </div>
+        <div class="card">
+          <div class="card-icon">📊</div>
+          <h4>Report Annuale</h4>
+          <p>Sintesi dei dati e dei risultati ottenuti.</p>
+          <a href="#" class="card-link">Visualizza file →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Piè di pagina -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2026 Tutti i diritti riservati.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
