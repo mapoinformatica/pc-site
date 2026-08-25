@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Prodotti Accessori</title>
+  <title>Accessori</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header class="main-header">
     <div class="container">
       <h1>Catalogo Prodotti</h1>
@@ -21,54 +20,37 @@
   </header>
 
   <main class="container page-content">
-    <h2 class="section-title">Prodotti Accessori</h2>
-    
+    <h2>Prodotti Accessori</h2>
     <div id="products-grid" class="products-grid">
-      <p class="loading-text">Caricamento prodotti in corso...</p>
+      <p>Caricamento prodotti...</p>
     </div>
   </main>
-
-  <footer class="main-footer">
-    <div class="container">
-      <p>&copy; Tutti i diritti riservati.</p>
-    </div>
-  </footer>
 
   <script>
     const currentCategory = 'accessori';
 
-    fetch('prodotti.json')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('File JSON non trovato o ancora nessun prodotto caricato.');
-        }
-        return response.json();
-      })
+    fetch('prodotti.json?cache=' + Date.now())
+      .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
-        const products = data.items || [];
-        
-        const filteredProducts = products.filter(p => p.category === currentCategory);
+        const items = (data.items || []).filter(p => p.category === currentCategory);
 
-        if (filteredProducts.length === 0) {
-          grid.innerHTML = '<p class="no-products">Nessun prodotto disponibile in questa categoria.</p>';
+        if (items.length === 0) {
+          grid.innerHTML = '<p>Nessun prodotto disponibile.</p>';
           return;
         }
 
-        grid.innerHTML = filteredProducts.map(p => `
+        grid.innerHTML = items.map(p => `
           <div class="product-card">
-            <div class="card-icon">⌨️</div>
             <h3>${p.title}</h3>
             <p>${p.desc}</p>
-            ${p.pdf ? `<a href="${p.pdf}" target="_blank" download class="btn btn-download">Scarica Scheda Tecnica (PDF)</a>` : ''}
+            <a href="${p.pdf}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>
           </div>
         `).join('');
       })
-      .catch(error => {
-        console.log('Info:', error.message);
-        document.getElementById('products-grid').innerHTML = '<p class="no-products">Nessun prodotto ancora inserito.</p>';
+      .catch(() => {
+        document.getElementById('products-grid').innerHTML = '<p>Nessun prodotto ancora inserito.</p>';
       });
   </script>
-
 </body>
 </html>
