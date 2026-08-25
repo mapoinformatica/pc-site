@@ -3,27 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catalogo Prodotti</title>
+  <title>Catalogo Prodotti - Home</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="home-body">
+<body>
 
-  <header class="header">
-    <div class="container header-container">
-      <div class="logo">
-        <span class="logo-icon">💻</span>
-        <span class="logo-text">Tech<span class="highlight">Store</span></span>
-      </div>
-      <nav class="nav-buttons">
-        <a href="desktop.html" class="btn">Pc-Desktop</a>
-        <a href="notebook.html" class="btn">Notebook</a>
-        <a href="accessori.html" class="btn">Accessori</a>
+  <header class="main-header">
+    <div class="container">
+      <h1>Catalogo Prodotti</h1>
+      <nav class="main-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="desktop.html">PC-Desktop</a>
+        <a href="notebook.html">Notebook</a>
+        <a href="accessori.html">Accessori</a>
       </nav>
     </div>
   </header>
+
+  <main class="container page-content">
+    <h2>Benvenuto nel nostro catalogo</h2>
+    <p>Seleziona una categoria per visualizzare i prodotti disponibili e scaricare le schede tecniche in PDF:</p>
+
+    <!-- Griglia delle categorie con schede quadrate -->
+    <div class="products-grid">
+      
+      <div class="product-card">
+        <h3>🖥️ PC-Desktop</h3>
+        <p>Esplora la gamma di computer desktop e workstation fisso per ogni esigenza.</p>
+        <a href="desktop.html" class="btn-download">Vai a PC-Desktop</a>
+      </div>
+
+      <div class="product-card">
+        <h3>💻 Notebook</h3>
+        <p>Scopri i nostri computer portatili leggeri e performanti per il lavoro e lo studio.</p>
+        <a href="notebook.html" class="btn-download">Vai a Notebook</a>
+      </div>
+
+      <div class="product-card">
+        <h3>⌨️ Accessori</h3>
+        <p>Trova periferiche, monitor, tastiere e componenti per il tuo setup.</p>
+        <a href="accessori.html" class="btn-download">Vai ad Accessori</a>
+      </div>
+
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 40px; color: #64748b;">
+    <div class="container">
+      <p>&copy; Tutti i diritti riservati.</p>
+    </div>
+  </footer>
 
 </body>
 </html>
