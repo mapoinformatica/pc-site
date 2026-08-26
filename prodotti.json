@@ -22,5 +22,17 @@
     "descrizione": "a",
     "immagine": "img/1787756204290_images.jpg",
     "pdf": "pdf/1787756204290_desktop.pdf"
+  },
+  {
+    "id": 1787757882899,
+    "nome": "Lenovo",
+    "categoria": "accessori",
+    "cpu": "i3-900",
+    "ram": "8gb",
+    "disco": "512",
+    "prezzo": 860,
+    "descrizione": "test",
+    "immagine": "img/1787757882899_images_(1).jpg",
+    "pdf": "pdf/1787757882899_desktop.pdf"
   }
 ]
