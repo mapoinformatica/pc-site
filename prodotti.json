@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1787753661626,
+    "nome": "dell",
+    "categoria": "desktop",
+    "cpu": "prova",
+    "ram": "prova",
+    "disco": "512",
+    "prezzo": 850,
+    "descrizione": "prova",
+    "immagine": "img/1787753661626_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787753661626_desktop.pdf"
+  }
+]
