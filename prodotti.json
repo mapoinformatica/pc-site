@@ -34,5 +34,17 @@
     "descrizione": "MOUSE",
     "immagine": "img/1787741890333_images_(1).jpg",
     "pdf": "pdf/1787741890333_desktop.pdf"
+  },
+  {
+    "id": 1787741929573,
+    "nome": "prova",
+    "categoria": "desktop",
+    "cpu": "prova",
+    "ram": "prova",
+    "disco": "prova",
+    "prezzo": 1000,
+    "descrizione": "prova",
+    "immagine": "img/1787741929573_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787741929573_desktop.pdf"
   }
 ]
