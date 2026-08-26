@@ -9,7 +9,7 @@
     .card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .form-group { margin-bottom: 16px; }
     label { display: block; font-weight: bold; margin-bottom: 6px; }
-    input[type="text"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    input[type="text"], input[type="password"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
     button { background: #0066cc; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
     button:hover { background: #0052a3; }
     button:disabled { background: #ccc; }
@@ -47,6 +47,19 @@
       font-weight: bold;
       margin-left: 6px;
     }
+    .logout-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .btn-logout {
+      background: #64748b;
+      width: auto;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+    .btn-logout:hover { background: #475569; }
   </style>
 </head>
 <body>
@@ -55,23 +68,23 @@
   <div class="card" id="loginCard">
     <h2>Accesso Admin</h2>
     <div class="form-group">
-      <label for="username">GitHub Username</label>
-      <input type="text" id="username" placeholder="es. mapoinformatica">
+      <label for="loginUser">Nome Utente</label>
+      <input type="text" id="loginUser" placeholder="Inserisci il tuo nome utente">
     </div>
     <div class="form-group">
-      <label for="repo">Nome Repository</label>
-      <input type="text" id="repo" placeholder="es. catalogo-prodotti">
+      <label for="loginPass">Password</label>
+      <input type="password" id="loginPass" placeholder="Inserisci la password">
     </div>
-    <div class="form-group">
-      <label for="token">Personal Access Token (ghp_...)</label>
-      <input type="text" id="token" placeholder="ghp_xxxxxxxxxxxx">
-    </div>
-    <button onclick="salvaCredenziali()">Accedi</button>
+    <button onclick="effettuaLogin()">Accedi</button>
+    <div id="loginError" class="error hidden" style="margin-top: 12px;"></div>
   </div>
 
   <!-- ADMIN CARD -->
   <div class="card hidden" id="adminCard">
-    <h2>Pubblica Nuovo Prodotto</h2>
+    <div class="logout-bar">
+      <h2>Pubblica Nuovo Prodotto</h2>
+      <button class="btn-logout" onclick="eseguiLogout()">Esci</button>
+    </div>
     <form id="productForm" onsubmit="pubblicaProdotto(event)">
       <div class="form-group">
         <label for="nome">Nome Prodotto</label>
@@ -109,27 +122,60 @@
   </div>
 
   <script>
+    // ==========================================
+    // CONFIGURAZIONE FISSA (GitHub & Credenziali)
+    // ==========================================
+    const CONFIG = {
+      username: "mapoinformatica",  // <--- Il tuo username GitHub
+      repo: "pc-site",     // <--- Il nome della tua repository
+      token: "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",   // <--- Inserisci qui il tuo Personal Access Token di GitHub
+
+      // Imposta qui il nome utente e la password per accedere al pannello:
+      adminUser: "admin",
+      adminPass: "PcSiteMapo1!"  // <--- Cambiala con la password che preferisci
+    };
+
     // Array globale in memoria per gestire l'interfaccia all'istante
     let prodottiGlobali = [];
 
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("gh_token")) {
+      // Controlla se l'utente ha già fatto il login in questa sessione del browser
+      if (localStorage.getItem("admin_logged") === "true") {
         mostraPannello();
       }
     });
 
-    function salvaCredenziali() {
-      const u = document.getElementById("username").value.trim();
-      const r = document.getElementById("repo").value.trim();
-      const t = document.getElementById("token").value.trim();
+    function effettuaLogin() {
+      const uInput = document.getElementById("loginUser").value.trim();
+      const pInput = document.getElementById("loginPass").value.trim();
+      const errorDiv = document.getElementById("loginError");
 
-      if (!u || !r || !t) return alert("Compila tutti i campi!");
+      if (uInput === CONFIG.adminUser && pInput === CONFIG.adminPass) {
+        errorDiv.classList.add("hidden");
+        // Salva lo stato di login e imposta in automatico le credenziali GitHub nel localStorage
+        localStorage.setItem("admin_logged", "true");
+        localStorage.setItem("gh_user", CONFIG.username);
+        localStorage.setItem("gh_repo", CONFIG.repo);
+        localStorage.setItem("gh_token", CONFIG.token);
 
-      localStorage.setItem("gh_user", u);
-      localStorage.setItem("gh_repo", r);
-      localStorage.setItem("gh_token", t);
+        mostraPannello();
+      } else {
+        errorDiv.textContent = "Nome utente o password errati!";
+        errorDiv.classList.remove("hidden");
+      }
+    }
 
-      mostraPannello();
+    function eseguiLogout() {
+      localStorage.removeItem("admin_logged");
+      localStorage.removeItem("gh_user");
+      localStorage.removeItem("gh_repo");
+      localStorage.removeItem("gh_token");
+      
+      document.getElementById("adminCard").classList.add("hidden");
+      document.getElementById("listCard").classList.add("hidden");
+      document.getElementById("loginCard").classList.remove("hidden");
+      document.getElementById("loginUser").value = "";
+      document.getElementById("loginPass").value = "";
     }
 
     function mostraPannello() {
@@ -237,7 +283,6 @@
       }
     }
 
-    // Funzione dedicata a disegnare la lista a schermo basandosi sull'array in memoria
     function renderizzaTabella() {
       const container = document.getElementById("listaProdotti");
 
@@ -272,10 +317,6 @@
       btn.disabled = true;
 
       try {
-        const user = localStorage.getItem("gh_user");
-        const repo = localStorage.getItem("gh_repo");
-        const token = localStorage.getItem("gh_token");
-
         const nome = document.getElementById("nome").value.trim();
         const categoria = document.getElementById("categoria").value;
         const descrizione = document.getElementById("descrizione").value.trim();
@@ -286,11 +327,9 @@
         const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
         const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
 
-        // 1. Carica Immagine e PDF (lasciato in sequenza come nella tua versione stabile)
         await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
         await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
 
-        // 2. Crea il nuovo oggetto prodotto
         const nuovoProdotto = {
           id: timestamp,
           nome,
@@ -300,11 +339,9 @@
           pdf: pdfPath
         };
 
-        // 3. Aggiungi subito all'array in memoria e AGGIORNA LA TABELLA ALL'ISTANTE
         prodottiGlobali.push(nuovoProdotto);
         renderizzaTabella();
 
-        // 4. Salva il file prodotti.json aggiornato su GitHub
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
 
@@ -315,7 +352,7 @@
       } catch (err) {
         status.className = "error";
         status.textContent = "Errore durante la pubblicazione: " + err.message;
-        caricaListaProdotti(); // Ricarica da GitHub in caso di errore
+        caricaListaProdotti();
       } finally {
         btn.disabled = false;
       }
@@ -339,17 +376,15 @@
           }
         }
 
-        // 1. Rimuovi dall'array in memoria e AGGIORNA SUBITO LA TABELLA
         prodottiGlobali.splice(index, 1);
         renderizzaTabella();
 
-        // 2. Salva il file prodotti.json aggiornato su GitHub
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
 
       } catch (err) {
         alert("Errore durante l'eliminazione: " + err.message);
-        caricaListaProdotti(); // Ricarica da GitHub in caso di errore
+        caricaListaProdotti();
       }
     }
   </script>
