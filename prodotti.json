@@ -22,5 +22,17 @@
     "descrizione": "fff",
     "immagine": "img/1787759923148_images.jpg",
     "pdf": "pdf/1787759923148_desktop.pdf"
+  },
+  {
+    "id": 1787760349212,
+    "nome": "hp",
+    "categoria": "desktop",
+    "cpu": "8",
+    "ram": "8",
+    "disco": "8",
+    "prezzo": 888,
+    "descrizione": "notebook",
+    "immagine": "img/1787760349212_images.jpg",
+    "pdf": "pdf/1787760349212_desktop.pdf"
   }
 ]
