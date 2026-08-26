@@ -34,5 +34,17 @@
     "descrizione": "test",
     "immagine": "img/1787757882899_images_(1).jpg",
     "pdf": "pdf/1787757882899_desktop.pdf"
+  },
+  {
+    "id": 1787758522075,
+    "nome": "p",
+    "categoria": "desktop",
+    "cpu": "p",
+    "ram": "p",
+    "disco": "p",
+    "prezzo": 8888,
+    "descrizione": "r",
+    "immagine": "img/1787758522075_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787758522075_desktop.pdf"
   }
 ]
