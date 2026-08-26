@@ -47,5 +47,17 @@
     "descrizione": "dsafpasoasof\ndfas\ndsa\nff\nas\nfdsafdsfdsfdsasdf",
     "immagine": "img/1787739721324_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787739721324_desktop.pdf"
+  },
+  {
+    "id": 1787741113833,
+    "nome": "p",
+    "categoria": "desktop",
+    "cpu": "i3",
+    "ram": "8gb",
+    "disco": "256",
+    "prezzo": 600,
+    "descrizione": "ggadsg",
+    "immagine": "img/1787741113833_1787738444845_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787741113833_1787738444845_desktop.pdf"
   }
 ]
