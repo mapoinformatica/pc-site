@@ -1,5 +1,17 @@
 [
   {
+    "id": 1787753661626,
+    "nome": "dell",
+    "categoria": "desktop",
+    "cpu": "prova",
+    "ram": "prova",
+    "disco": "512",
+    "prezzo": 850,
+    "descrizione": "prova",
+    "immagine": "img/1787753661626_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787753661626_desktop.pdf"
+  },
+  {
     "id": 1787754843339,
     "nome": "hp",
     "categoria": "desktop",
@@ -10,5 +22,17 @@
     "descrizione": "tt",
     "immagine": "img/1787754843339_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787754843339_desktop.pdf"
+  },
+  {
+    "id": 1787755218730,
+    "nome": "hp",
+    "categoria": "desktop",
+    "cpu": "78",
+    "ram": "88",
+    "disco": "88",
+    "prezzo": 8709,
+    "descrizione": "f",
+    "immagine": "img/1787755218730_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787755218730_desktop.pdf"
   }
 ]
