@@ -204,29 +204,20 @@
       const token = localStorage.getItem("gh_token");
       const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
 
-      // 1. Cerchiamo lo SHA attuale del file (se esiste già)
+      // Controllo essenziale dello SHA (identico alla prima versione, con gestione sicura)
       let sha = null;
       try {
-        const res = await fetch(url, { 
-          headers: { 
-            "Authorization": `token ${token}`,
-            "Cache-Control": "no-cache"
-          } 
-        });
+        const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
         if (res.ok) {
           const data = await res.json();
           sha = data.sha;
         }
       } catch (e) {}
 
-      // 2. Prepariamo il corpo della richiesta
       const body = { message, content: contentBase64 };
-      if (sha) {
-        body.sha = sha;
-      }
+      if (sha) body.sha = sha;
 
-      // 3. Eseguiamo la chiamata PUT
-      let response = await fetch(url, {
+      const response = await fetch(url, {
         method: "PUT",
         headers: {
           "Authorization": `token ${token}`,
@@ -234,24 +225,6 @@
         },
         body: JSON.stringify(body)
       });
-
-      // Se GitHub risponde che manca lo SHA (perché il file esiste ma la GET preventiva ha fallito),
-      // facciamo una seconda lettura immediata e ripetiamo al volo.
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        if (errData.message && errData.message.includes("sha")) {
-          const resRetry = await fetch(url, { headers: { "Authorization": `token ${token}`, "Cache-Control": "no-cache" } });
-          if (resRetry.ok) {
-            const dataRetry = await resRetry.json();
-            body.sha = dataRetry.sha;
-            response = await fetch(url, {
-              method: "PUT",
-              headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-              body: JSON.stringify(body)
-            });
-          }
-        }
-      }
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
@@ -295,7 +268,7 @@
       const token = localStorage.getItem("gh_token");
 
       try {
-        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main&cache=` + Date.now(), {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/prodotti.json?ref=main`, {
           headers: { "Authorization": `token ${token}` }
         });
 
