@@ -36,5 +36,16 @@
     "descrizione": "pc fisso.... con componenti\npc fisso.... con componenti\npc fisso.... con componenti\npc fisso.... con componenti\npc fisso.... con componenti",
     "immagine": "img/1787738902588_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738902588_desktop.pdf"
+  },
+  {
+    "id": 1787739721324,
+    "nome": "prova2",
+    "categoria": "desktop",
+    "cpu": "15",
+    "ram": "8gb",
+    "disco": "512",
+    "descrizione": "dsafpasoasof\ndfas\ndsa\nff\nas\nfdsafdsfdsfdsasdf",
+    "immagine": "img/1787739721324_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787739721324_desktop.pdf"
   }
 ]
