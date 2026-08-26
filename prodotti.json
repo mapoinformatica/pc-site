@@ -12,18 +12,6 @@
     "pdf": "pdf/1787741802549_desktop.pdf"
   },
   {
-    "id": 1787741890333,
-    "nome": "Logitech",
-    "categoria": "accessori",
-    "cpu": "",
-    "ram": "",
-    "disco": "",
-    "prezzo": 66,
-    "descrizione": "MOUSE",
-    "immagine": "img/1787741890333_images_(1).jpg",
-    "pdf": "pdf/1787741890333_desktop.pdf"
-  },
-  {
     "id": 1787741929573,
     "nome": "prova",
     "categoria": "desktop",
