@@ -18,7 +18,7 @@
     .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .hidden { display: none; }
 
-    /* Stili per la lista eliminazione */
+    /* Stili per la lista */
     .product-list-item {
       display: flex;
       justify-content: space-between;
@@ -27,6 +27,7 @@
       border-bottom: 1px solid #eee;
     }
     .product-list-item:last-child { border-bottom: none; }
+    .product-actions { display: flex; gap: 6px; }
     .btn-delete {
       background: #dc2626;
       color: white;
@@ -34,10 +35,24 @@
       padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      width: auto;
       font-size: 0.85rem;
     }
     .btn-delete:hover { background: #b91c1c; }
+    .btn-edit {
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-edit:hover { background: #0369a1; }
+    .btn-cancel {
+      background: #64748b;
+      margin-top: 8px;
+    }
+    .btn-cancel:hover { background: #475569; }
     .badge {
       background: #e2e8f0;
       color: #475569;
@@ -82,10 +97,11 @@
   <!-- ADMIN CARD -->
   <div class="card hidden" id="adminCard">
     <div class="logout-bar">
-      <h2>Pubblica Nuovo Prodotto</h2>
+      <h2 id="formTitle">Pubblica Nuovo Prodotto</h2>
       <button class="btn-logout" onclick="eseguiLogout()">Esci</button>
     </div>
-    <form id="productForm" onsubmit="pubblicaProdotto(event)">
+    <form id="productForm" onsubmit="salvaProdotto(event)">
+      <input type="hidden" id="editIndex" value="">
       <div class="form-group">
         <label for="nome">Nome Prodotto</label>
         <input type="text" id="nome" required>
@@ -104,18 +120,21 @@
       </div>
       <div class="form-group">
         <label for="immagine">Immagine Prodotto (JPG, PNG, WEBP)</label>
-        <input type="file" id="immagine" accept="image/*" required>
+        <input type="file" id="immagine" accept="image/*">
+        <small id="imgHelp" style="color: #666; display:none; margin-top:4px;"></small>
       </div>
       <div class="form-group">
         <label for="pdf">Scheda Tecnica PDF</label>
-        <input type="file" id="pdf" accept="application/pdf" required>
+        <input type="file" id="pdf" accept="application/pdf">
+        <small id="pdfHelp" style="color: #666; display:none; margin-top:4px;"></small>
       </div>
       <button type="submit" id="submitBtn">Pubblica Prodotto</button>
+      <button type="button" id="cancelEditBtn" class="btn-cancel hidden" onclick="annullaModifica()">Annulla Modifica</button>
     </form>
     <div id="status"></div>
   </div>
 
-  <!-- LISTA PRODOTTI PER ELIMINAZIONE -->
+  <!-- LISTA PRODOTTI -->
   <div class="card hidden" id="listCard">
     <h2>Gestisci / Elimina Prodotti</h2>
     <div id="listaProdotti">Caricamento prodotti...</div>
@@ -204,7 +223,6 @@
       const token = localStorage.getItem("gh_token");
       const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
 
-      // Controllo essenziale dello SHA (identico alla prima versione, con gestione sicura)
       let sha = null;
       try {
         const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
@@ -305,20 +323,63 @@
               <strong>${title}</strong>
               <span class="badge">${cat}</span>
             </div>
-            <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
+            <div class="product-actions">
+              <button class="btn-edit" onclick="preparaModifica(${index})">Modifica</button>
+              <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    async function pubblicaProdotto(e) {
+    function preparaModifica(index) {
+      const p = prodottiGlobali[index];
+      document.getElementById("editIndex").value = index;
+      document.getElementById("nome").value = p.nome || "";
+      document.getElementById("categoria").value = p.categoria || "desktop";
+      document.getElementById("descrizione").value = p.descrizione || "";
+      
+      // I file non sono obbligatori in modifica
+      document.getElementById("immagine").required = false;
+      document.getElementById("pdf").required = false;
+
+      const imgHelp = document.getElementById("imgHelp");
+      imgHelp.style.display = "block";
+      imgHelp.textContent = `File attuale: ${p.immagine || 'Nessuno'} (lascia vuoto per non modificarlo)`;
+
+      const pdfHelp = document.getElementById("pdfHelp");
+      pdfHelp.style.display = "block";
+      pdfHelp.textContent = `File attuale: ${p.pdf || 'Nessuno'} (lascia vuoto per non modificarlo)`;
+
+      document.getElementById("formTitle").textContent = "Modifica Prodotto";
+      document.getElementById("submitBtn").textContent = "Salva Modifiche";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function annullaModifica() {
+      document.getElementById("productForm").reset();
+      document.getElementById("editIndex").value = "";
+      document.getElementById("immagine").required = true;
+      document.getElementById("pdf").required = true;
+      document.getElementById("imgHelp").style.display = "none";
+      document.getElementById("pdfHelp").style.display = "none";
+      document.getElementById("formTitle").textContent = "Pubblica Nuovo Prodotto";
+      document.getElementById("submitBtn").textContent = "Pubblica Prodotto";
+      document.getElementById("cancelEditBtn").classList.add("hidden");
+    }
+
+    async function salvaProdotto(e) {
       e.preventDefault();
       const status = document.getElementById("status");
       const btn = document.getElementById("submitBtn");
+      const editIndex = document.getElementById("editIndex").value;
+      const isEditing = editIndex !== "";
 
       status.className = "";
       status.style.display = "block";
-      status.textContent = "Caricamento file in corso...";
+      status.textContent = isEditing ? "Aggiornamento in corso..." : "Caricamento file in corso...";
       btn.disabled = true;
 
       try {
@@ -328,35 +389,75 @@
         const filePdf = document.getElementById("pdf").files[0];
         const fileImg = document.getElementById("immagine").files[0];
 
-        const timestamp = Date.now();
-        const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
-        const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+        let imgPath, pdfId, timestamp, existingProd = null;
 
-        await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
-        await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+        if (isEditing) {
+          existingProd = prodottiGlobali[editIndex];
+          timestamp = existingProd.id || Date.now();
+          imgPath = existingProd.immagine || existingProd.img;
+          pdfPath = existingProd.pdf;
 
-        const newUserProd = {
-          id: timestamp,
-          nome,
-          categoria,
-          descrizione,
-          immagine: imgPath,
-          pdf: pdfPath
-        };
+          // Se è stata caricata una nuova immagine, la carichiamo ed eliminiamo la vecchia
+          if (fileImg) {
+            imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+            await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Aggiornata immagine: ${fileImg.name}`);
+            if (existingProd.immagine && existingProd.immagine !== imgPath) {
+              await eliminaFileGitHub(existingProd.immagine, "Rimosso vecchio file immagine");
+            }
+          }
 
-        prodottiGlobali.push(newUserProd);
+          // Se è stato caricato un nuovo PDF, lo carichiamo ed eliminiamo il vecchio
+          if (filePdf) {
+            pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
+            await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Aggiornato PDF: ${filePdf.name}`);
+            if (existingProd.pdf && existingProd.pdf !== pdfPath) {
+              await eliminaFileGitHub(existingProd.pdf, "Rimosso vecchio file PDF");
+            }
+          }
+
+          prodottiGlobali[editIndex] = {
+            id: timestamp,
+            nome,
+            categoria,
+            descrizione,
+            immagine: imgPath,
+            pdf: pdfPath
+          };
+
+        } else {
+          timestamp = Date.now();
+          pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
+          imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+
+          await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
+          await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+
+          const newUserProd = {
+            id: timestamp,
+            nome,
+            categoria,
+            descrizione,
+            immagine: imgPath,
+            pdf: pdfPath
+          };
+
+          prodottiGlobali.push(newUserProd);
+        }
+
         renderizzaTabella();
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
-        await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
+        const commitMsg = isEditing ? `Aggiornato prodotto: ${nome}` : `Aggiunto prodotto: ${nome}`;
+        await caricaFileGitHub("prodotti.json", jsonBase64, commitMsg);
 
         status.className = "success";
-        status.textContent = "Prodotto pubblicato con successo!";
-        document.getElementById("productForm").reset();
+        status.textContent = isEditing ? "Prodotto modificato con successo!" : "Prodotto pubblicato con successo!";
+        
+        annullaModifica();
 
       } catch (err) {
         status.className = "error";
-        status.textContent = "Errore durante la pubblicazione: " + err.message;
+        status.textContent = "Errore durante il salvataggio: " + err.message;
         caricaListaProdotti();
       } finally {
         btn.disabled = false;
