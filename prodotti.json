@@ -3,16 +3,24 @@
     "id": 1787738444845,
     "nome": "dell",
     "categoria": "desktop",
-    "descrizione": "dell",
+    "descrizione": "dell opti",
     "immagine": "img/1787738444845_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738444845_desktop.pdf"
   },
   {
     "id": 1787738476388,
-    "nome": "dell",
+    "nome": "Dell Optiplex",
     "categoria": "desktop",
     "descrizione": "dell",
     "immagine": "img/1787738476388_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738476388_desktop.pdf"
+  },
+  {
+    "id": 1787738604756,
+    "nome": "test",
+    "categoria": "notebook",
+    "descrizione": "test",
+    "immagine": "img/1787738604756_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787738604756_desktop.pdf"
   }
 ]
