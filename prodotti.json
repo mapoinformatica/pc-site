@@ -46,5 +46,17 @@
     "descrizione": "fd",
     "immagine": "img/1787760719012_images.jpg",
     "pdf": "pdf/1787760719012_desktop.pdf"
+  },
+  {
+    "id": 1787760757925,
+    "nome": "fdas",
+    "categoria": "notebook",
+    "cpu": "f",
+    "ram": "f",
+    "disco": "f",
+    "prezzo": 3333,
+    "descrizione": "333",
+    "immagine": "img/1787760757925_images_(1).jpg",
+    "pdf": "pdf/1787760757925_desktop.pdf"
   }
 ]
