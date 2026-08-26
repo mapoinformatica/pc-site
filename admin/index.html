@@ -68,12 +68,12 @@
   <div class="card" id="loginCard">
     <h2>Accesso Admin</h2>
     <div class="form-group">
-      <label for="loginUser">Nome Utente</label>
-      <input type="text" id="loginUser" placeholder="Inserisci il tuo nome utente">
+      <label for="loginUser">Nome Utente GitHub</label>
+      <input type="text" id="loginUser" placeholder="es. mapoinformatica">
     </div>
     <div class="form-group">
-      <label for="loginPass">Password</label>
-      <input type="password" id="loginPass" placeholder="Inserisci la password">
+      <label for="loginPass">Personal Access Token (Password)</label>
+      <input type="password" id="loginPass" placeholder="Incolla qui il tuo token ghp_...">
     </div>
     <button onclick="effettuaLogin()">Accedi</button>
     <div id="loginError" class="error hidden" style="margin-top: 12px;"></div>
@@ -122,45 +122,51 @@
   </div>
 
   <script>
-    // ==========================================
-    // CONFIGURAZIONE FISSA (GitHub & Credenziali)
-    // ==========================================
-    const CONFIG = {
-      username: "mapoinformatica",  // <--- Il tuo username GitHub
-      repo: "pc-site",     // <--- Il nome della tua repository
-      token: "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",   // <--- Inserisci qui il tuo Personal Access Token di GitHub
+    // Repository configurata in automatico
+    const REPO_NAME = "pc-site";
 
-      // Imposta qui il nome utente e la password per accedere al pannello:
-      adminUser: "admin",
-      adminPass: "PcSiteMapo1!"  // <--- Cambiala con la password che preferisci
-    };
-
-    // Array globale in memoria per gestire l'interfaccia all'istante
     let prodottiGlobali = [];
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Controlla se l'utente ha già fatto il login in questa sessione del browser
       if (localStorage.getItem("admin_logged") === "true") {
         mostraPannello();
       }
     });
 
-    function effettuaLogin() {
+    async function effettuaLogin() {
       const uInput = document.getElementById("loginUser").value.trim();
-      const pInput = document.getElementById("loginPass").value.trim();
+      const tokenInput = document.getElementById("loginPass").value.trim();
       const errorDiv = document.getElementById("loginError");
 
-      if (uInput === CONFIG.adminUser && pInput === CONFIG.adminPass) {
+      if (!uInput || !tokenInput) {
+        errorDiv.textContent = "Inserisci sia lo username che il token!";
+        errorDiv.classList.remove("hidden");
+        return;
+      }
+
+      errorDiv.textContent = "Verifica credenziali in corso...";
+      errorDiv.className = "error";
+      errorDiv.classList.remove("hidden");
+
+      try {
+        const testRes = await fetch(`https://api.github.com/repos/${uInput}/${REPO_NAME}`, {
+          headers: { "Authorization": `token ${tokenInput}` }
+        });
+
+        if (!testRes.ok) {
+          throw new Error("Token o username non validi / non autorizzati.");
+        }
+
         errorDiv.classList.add("hidden");
-        // Salva lo stato di login e imposta in automatico le credenziali GitHub nel localStorage
         localStorage.setItem("admin_logged", "true");
-        localStorage.setItem("gh_user", CONFIG.username);
-        localStorage.setItem("gh_repo", CONFIG.repo);
-        localStorage.setItem("gh_token", CONFIG.token);
+        localStorage.setItem("gh_user", uInput);
+        localStorage.setItem("gh_repo", REPO_NAME);
+        localStorage.setItem("gh_token", tokenInput);
 
         mostraPannello();
-      } else {
-        errorDiv.textContent = "Nome utente o password errati!";
+
+      } catch (err) {
+        errorDiv.textContent = "Accesso negato: controlla che lo username e il token siano corretti.";
         errorDiv.classList.remove("hidden");
       }
     }
@@ -330,7 +336,7 @@
         await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
         await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
 
-        const nuovoProdotto = {
+        const newUserProd = {
           id: timestamp,
           nome,
           categoria,
@@ -339,7 +345,7 @@
           pdf: pdfPath
         };
 
-        prodottiGlobali.push(nuovoProdotto);
+        prodottiGlobali.push(newUserProd);
         renderizzaTabella();
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
