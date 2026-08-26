@@ -200,12 +200,12 @@
       });
     }
 
-    async function caricaFileGitHub(path, contentBase64, message) {
+        async function caricaFileGitHub(path, contentBase64, message) {
       const user = localStorage.getItem("gh_user");
       const repo = localStorage.getItem("gh_repo");
       const token = localStorage.getItem("gh_token");
       const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-
+    
       let sha = null;
       try {
         const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
@@ -213,11 +213,13 @@
           const data = await res.json();
           sha = data.sha;
         }
-      } catch (e) {}
-
+      } catch (e) {
+        // Se il file non esiste ancora, va bene così (sha rimane null)
+      }
+    
       const body = { message, content: contentBase64 };
       if (sha) body.sha = sha;
-
+    
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -226,8 +228,11 @@
         },
         body: JSON.stringify(body)
       });
-
-      if (!response.ok) throw new Error(`Errore caricamento ${path}`);
+    
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+      }
       return await response.json();
     }
 
