@@ -70,5 +70,17 @@
     "descrizione": "prova",
     "immagine": "img/1787768870805_1787760349212_images.jpg",
     "pdf": "pdf/1787768870805_1787760349212_desktop.pdf"
+  },
+  {
+    "id": 1787768904975,
+    "nome": "hp pavilion",
+    "categoria": "notebook",
+    "cpu": "i9-9999",
+    "ram": "8g DDR5",
+    "disco": "512 SSD",
+    "prezzo": 999,
+    "descrizione": "dss",
+    "immagine": "img/1787768904975_1787760349212_images.jpg",
+    "pdf": "pdf/1787768904975_1787760349212_desktop.pdf"
   }
 ]
