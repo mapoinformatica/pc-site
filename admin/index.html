@@ -200,27 +200,36 @@
       });
     }
 
-        async function caricaFileGitHub(path, contentBase64, message) {
+    async function caricaFileGitHub(path, contentBase64, message) {
       const user = localStorage.getItem("gh_user");
       const repo = localStorage.getItem("gh_repo");
       const token = localStorage.getItem("gh_token");
-      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    
+      // Aggiungiamo un parametro casuale per evitare qualsiasi cache di GitHub durante il controllo dello SHA
+      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}?t=` + Date.now();
+
       let sha = null;
       try {
-        const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+        const res = await fetch(url, { 
+          headers: { 
+            "Authorization": `token ${token}`,
+            "Cache-Control": "no-cache"
+          } 
+        });
         if (res.ok) {
           const data = await res.json();
           sha = data.sha;
         }
       } catch (e) {
-        // Se il file non esiste ancora, va bene così (sha rimane null)
+        // Se il file non esiste, sha resta null
       }
-    
+
+      // L'URL per la scrittura PUT non deve avere parametri di query alla fine
+      const putUrl = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
       const body = { message, content: contentBase64 };
       if (sha) body.sha = sha;
-    
-      const response = await fetch(url, {
+
+      const response = await fetch(putUrl, {
         method: "PUT",
         headers: {
           "Authorization": `token ${token}`,
@@ -228,7 +237,7 @@
         },
         body: JSON.stringify(body)
       });
-    
+
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
         throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
