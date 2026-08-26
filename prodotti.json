@@ -14,5 +14,13 @@
     "descrizione": "hp",
     "immagine": "img/1787738462572_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738462572_desktop.pdf"
+  },
+  {
+    "id": 1787738476388,
+    "nome": "dell",
+    "categoria": "desktop",
+    "descrizione": "dell",
+    "immagine": "img/1787738476388_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787738476388_desktop.pdf"
   }
 ]
