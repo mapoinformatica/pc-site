@@ -135,7 +135,7 @@
   <script>
     const currentCategory = 'desktop';
 
-    fetch('https://gist.githubusercontent.com/mapoinformatica/c00dbaa43c8f77f5913bfa2bc141c3b3/raw/811c1738c4d2431e006413dde3f0d2d8d4cde547/prodotti.json?t=' + Date.now())
+    fetch('prodotti.json?cache=' + Date.now())
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
