@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": 1787749890332,
+    "nome": "Dell",
+    "categoria": "desktop",
+    "cpu": "i3",
+    "ram": "8gb ddr5",
+    "disco": "512 SSD",
+    "prezzo": 980,
+    "descrizione": "PC",
+    "immagine": "img/1787749890332_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787749890332_desktop.pdf"
+  }
+]
