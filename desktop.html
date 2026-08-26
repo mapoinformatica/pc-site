@@ -6,7 +6,7 @@
   <title>PC-Desktop</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Stili integrati per l'immagine all'interno della scheda quadrata */
+    /* Stili integrati per l'immagine e le specifiche all'interno della scheda */
     .product-card {
       display: flex;
       flex-direction: column;
@@ -45,6 +45,25 @@
       color: #1e293b;
     }
 
+    /* Stili per le specifiche tecniche (CPU, RAM, Disco) */
+    .product-specs {
+      font-size: 0.8rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+    }
+
+    .product-specs div {
+      margin-bottom: 2px;
+      color: #334155;
+    }
+
+    .product-specs div:last-child {
+      margin-bottom: 0;
+    }
+
     .product-desc {
       font-size: 0.85rem;
       color: #64748b;
@@ -77,16 +96,11 @@
   <script>
     const currentCategory = 'desktop';
 
-    // Ricarica senza cache per vedere subito i nuovi inserimenti dell'admin
     fetch('prodotti.json?cache=' + Date.now())
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
-        
-        // Supporta sia il formato [ {..} ] che { items: [ {..} ] }
         const allItems = Array.isArray(data) ? data : (data.items || []);
-        
-        // Filtra per categoria attuale
         const items = allItems.filter(p => p.categoria === currentCategory || p.category === currentCategory);
 
         if (items.length === 0) {
@@ -95,22 +109,34 @@
         }
 
         grid.innerHTML = items.map(p => {
-          // Normalizzazione nomi campi (supporta sia nuovo che vecchio admin)
           const title = p.nome || p.title || 'Prodotto senza titolo';
           const desc = p.descrizione || p.desc || '';
           const pdfPath = p.pdf || '#';
           const imgPath = p.immagine || p.img || '';
 
-          // Blocco HTML immagine (se presente mostra l'immagine, altrimenti un segnaposto)
+          const cpu = p.cpu || '';
+          const ram = p.ram || '';
+          const disco = p.disco || '';
+
           const imageHtml = imgPath 
             ? `<div class="product-img-container"><img src="${imgPath}" alt="${title}" class="product-img" onerror="this.parentElement.style.display='none'"></div>`
             : `<div class="product-img-container"><span style="color:#94a3b8; font-size:12px;">Nessuna immagine</span></div>`;
+
+          // Genera il blocco specifiche solo se almeno uno dei campi è compilato
+          const specsHtml = (cpu || ram || disco) ? `
+            <div class="product-specs">
+              ${cpu ? `<div><strong>CPU:</strong> ${cpu}</div>` : ''}
+              ${ram ? `<div><strong>RAM:</strong> ${ram}</div>` : ''}
+              ${disco ? `<div><strong>Disco:</strong> ${disco}</div>` : ''}
+            </div>
+          ` : '';
 
           return `
             <div class="product-card">
               ${imageHtml}
               <div class="product-info">
                 <h3 class="product-title">${title}</h3>
+                ${specsHtml}
                 <p class="product-desc">${desc}</p>
               </div>
               <a href="${pdfPath}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>
