@@ -19,6 +19,9 @@
     "id": 1787738604756,
     "nome": "test",
     "categoria": "notebook",
+    "cpu": "i3",
+    "ram": "8gb",
+    "disco": "512",
     "descrizione": "test",
     "immagine": "img/1787738604756_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738604756_desktop.pdf"
