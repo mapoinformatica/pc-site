@@ -6,17 +6,21 @@
   <title>Accessori</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Stili integrati per l'immagine all'interno della scheda quadrata */
+    /* Rimuove il vincolo quadrato e adatta l'altezza in base al contenuto */
     .product-card {
+      aspect-ratio: auto !important;
+      height: auto !important;
+      min-height: 560px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-sizing: border-box;
       overflow: hidden;
     }
     
     .product-img-container {
       width: 100%;
-      height: 140px;
+      height: 160px;
       margin-bottom: 10px;
       border-radius: 6px;
       overflow: hidden;
@@ -24,6 +28,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .product-img {
@@ -43,14 +48,48 @@
       margin: 0 0 6px 0;
       font-size: 1rem;
       color: #1e293b;
+      flex-shrink: 0;
+    }
+
+    /* Stile per la sezione prezzi */
+    .product-pricing {
+      font-size: 0.8rem;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .product-pricing div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      color: #166534;
+    }
+
+    .product-pricing div.total-price {
+      font-weight: bold;
+      border-top: 1px solid #bbf7d0;
+      padding-top: 3px;
+      margin-top: 3px;
+      color: #14532d;
     }
 
     .product-desc {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       color: #64748b;
       margin: 0 0 10px 0;
       overflow-y: auto;
       flex-grow: 1;
+      line-height: 1.5;
+      max-height: 90px;
+    }
+
+    .btn-download {
+      flex-shrink: 0;
+      margin-top: auto;
     }
   </style>
 </head>
@@ -101,6 +140,26 @@
           const pdfPath = p.pdf || '#';
           const imgPath = p.immagine || p.img || '';
 
+          // Gestione Prezzi (supporta diverse varianti di chiavi nel JSON)
+          const rawPrice = p.prezzo || p.price || p.prezzo_imponibile || p.imponibile;
+          let pricingHtml = '';
+
+          if (rawPrice !== undefined && rawPrice !== null && rawPrice !== '') {
+            const imponibile = parseFloat(rawPrice);
+            if (!isNaN(imponibile)) {
+              const iva = imponibile * 0.22;
+              const ivato = imponibile + iva;
+
+              pricingHtml = `
+                <div class="product-pricing">
+                  <div><span>Imponibile (Escl. IVA):</span> <strong>€ ${imponibile.toFixed(2)}</strong></div>
+                  <div><span>IVA (22%):</span> <strong>€ ${iva.toFixed(2)}</strong></div>
+                  <div class="total-price"><span>Prezzo Ivato:</span> <strong>€ ${ivato.toFixed(2)}</strong></div>
+                </div>
+              `;
+            }
+          }
+
           // Blocco HTML immagine (se presente mostra l'immagine, altrimenti un segnaposto)
           const imageHtml = imgPath 
             ? `<div class="product-img-container"><img src="${imgPath}" alt="${title}" class="product-img" onerror="this.parentElement.style.display='none'"></div>`
@@ -111,6 +170,7 @@
               ${imageHtml}
               <div class="product-info">
                 <h3 class="product-title">${title}</h3>
+                ${pricingHtml}
                 <p class="product-desc">${desc}</p>
               </div>
               <a href="${pdfPath}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>

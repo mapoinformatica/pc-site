@@ -10,7 +10,7 @@
     .product-card {
       aspect-ratio: auto !important;
       height: auto !important;
-      min-height: 540px;
+      min-height: 580px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -20,8 +20,8 @@
     
     .product-img-container {
       width: 100%;
-      height: 200px;
-      margin-bottom: 12px;
+      height: 180px;
+      margin-bottom: 10px;
       border-radius: 6px;
       overflow: hidden;
       background-color: #f1f5f9;
@@ -56,7 +56,7 @@
       border: 1px solid #e2e8f0;
       border-radius: 4px;
       padding: 6px 8px;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       flex-shrink: 0;
     }
 
@@ -69,14 +69,40 @@
       margin-bottom: 0;
     }
 
+    /* Stile per la sezione prezzi */
+    .product-pricing {
+      font-size: 0.8rem;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 6px 8px;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .product-pricing div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      color: #166534;
+    }
+
+    .product-pricing div.total-price {
+      font-weight: bold;
+      border-top: 1px solid #bbf7d0;
+      padding-top: 3px;
+      margin-top: 3px;
+      color: #14532d;
+    }
+
     .product-desc {
-      font-size: 0.85rem !important;
+      font-size: 0.82rem !important;
       color: #475569 !important;
-      line-height: 1.6;
-      max-height: 110px;
+      line-height: 1.5;
+      max-height: 90px;
       overflow-y: auto !important;
       flex-grow: 1;
-      margin: 0 0 12px 0 !important;
+      margin: 0 0 10px 0 !important;
     }
 
     .btn-download {
@@ -130,6 +156,26 @@
           const ram = p.ram || '';
           const disco = p.disco || '';
 
+          // Gestione Prezzi (supporta diverse varianti di chiavi nel JSON)
+          const rawPrice = p.prezzo || p.price || p.prezzo_imponibile || p.imponibile;
+          let pricingHtml = '';
+
+          if (rawPrice !== undefined && rawPrice !== null && rawPrice !== '') {
+            const imponibile = parseFloat(rawPrice);
+            if (!isNaN(imponibile)) {
+              const iva = imponibile * 0.22;
+              const ivato = imponibile + iva;
+
+              pricingHtml = `
+                <div class="product-pricing">
+                  <div><span>Imponibile (Escl. IVA):</span> <strong>€ ${imponibile.toFixed(2)}</strong></div>
+                  <div><span>IVA (22%):</span> <strong>€ ${iva.toFixed(2)}</strong></div>
+                  <div class="total-price"><span>Prezzo Ivato:</span> <strong>€ ${ivato.toFixed(2)}</strong></div>
+                </div>
+              `;
+            }
+          }
+
           const imageHtml = imgPath 
             ? `<div class="product-img-container"><img src="${imgPath}" alt="${title}" class="product-img" onerror="this.parentElement.style.display='none'"></div>`
             : `<div class="product-img-container"><span style="color:#94a3b8; font-size:12px;">Nessuna immagine</span></div>`;
@@ -148,6 +194,7 @@
               <div class="product-info">
                 <h3 class="product-title">${title}</h3>
                 ${specsHtml}
+                ${pricingHtml}
                 <p class="product-desc">${desc}</p>
               </div>
               <a href="${pdfPath}" target="_blank" download class="btn-download">Scarica Scheda Tecnica (PDF)</a>
