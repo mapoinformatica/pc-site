@@ -82,5 +82,17 @@
     "descrizione": "dss",
     "immagine": "img/1787768904975_1787760349212_images.jpg",
     "pdf": "pdf/1787768904975_1787760349212_desktop.pdf"
+  },
+  {
+    "id": 1787768932365,
+    "nome": "mouse",
+    "categoria": "accessori",
+    "cpu": "",
+    "ram": "",
+    "disco": "",
+    "prezzo": 85,
+    "descrizione": "dd",
+    "immagine": "img/1787768932365_1787760349212_images.jpg",
+    "pdf": "pdf/1787768932365_1787760349212_desktop.pdf"
   }
 ]
