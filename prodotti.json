@@ -22,5 +22,16 @@
     "descrizione": "test",
     "immagine": "img/1787738604756_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787738604756_desktop.pdf"
+  },
+  {
+    "id": 1787738902588,
+    "nome": "Dell",
+    "categoria": "desktop",
+    "cpu": "Intel core i5",
+    "ram": "8gb DDR5",
+    "disco": "512 SSD",
+    "descrizione": "pc fisso....",
+    "immagine": "img/1787738902588_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787738902588_desktop.pdf"
   }
 ]
