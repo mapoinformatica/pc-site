@@ -34,5 +34,17 @@
     "descrizione": "notebook",
     "immagine": "img/1787760349212_images.jpg",
     "pdf": "pdf/1787760349212_desktop.pdf"
+  },
+  {
+    "id": 1787760719012,
+    "nome": "prova",
+    "categoria": "desktop",
+    "cpu": "9",
+    "ram": "9",
+    "disco": "9",
+    "prezzo": 8989.99,
+    "descrizione": "fd",
+    "immagine": "img/1787760719012_images.jpg",
+    "pdf": "pdf/1787760719012_desktop.pdf"
   }
 ]
