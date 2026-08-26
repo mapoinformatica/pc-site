@@ -201,58 +201,84 @@
     }
 
     async function caricaFileGitHub(path, contentBase64, message) {
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
-      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-    
-      // 1. Interroghiamo SEMPRE GitHub in tempo reale per avere lo SHA aggiornato al millisecondo
-      let currentSha = null;
-      try {
-        const getRes = await fetch(url + "?t=" + Date.now(), {
-          method: "GET",
-          headers: {
-            "Authorization": `token ${token}`,
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache"
-          }
-        });
-        
-        if (getRes.ok) {
-          const getData = await getRes.json();
-          currentSha = getData.sha;
-        }
-      } catch (e) {
-        console.warn("Il file potrebbe non esistere ancora, procediamo senza SHA.");
-      }
-    
-      // 2. Prepariamo il corpo della richiesta inserendo lo SHA fresco (se il file esiste)
-      const body = {
-        message: message,
-        content: contentBase64
-      };
-      
-      if (currentSha) {
-        body.sha = currentSha;
-      }
-    
-      // 3. Eseguiamo la richiesta di scrittura (PUT)
-      const response = await fetch(url, {
-        method: "PUT",
+  const user = localStorage.getItem("gh_user");
+  const repo = localStorage.getItem("gh_repo");
+  const token = localStorage.getItem("gh_token");
+  const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
+  // Funzione d'appoggio per recuperare lo SHA in modo pulito
+  async function fetchSha() {
+    try {
+      const res = await fetch(url + "?t=" + Date.now(), {
+        method: "GET",
         headers: {
           "Authorization": `token ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        }
       });
-    
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.sha;
       }
+    } catch (e) {}
+    return null;
+  }
+
+  // 1. Tentiamo di recuperare lo SHA iniziale
+  let currentSha = await fetchSha();
+
+  const body = {
+    message: message,
+    content: contentBase64
+  };
+  
+  if (currentSha) {
+    body.sha = currentSha;
+  }
+
+  // 2. Eseguiamo la richiesta di scrittura (PUT)
+  let response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Authorization": `token ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  // 3. RETRY DI EMERGENZA: Se GitHub rifiuta perché manca lo SHA o c'è un conflitto, 
+  // rigeneriamo lo SHA all'istante e ripetiamo l'invio una seconda volta in automatico.
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     
-      return await response.json();
+    // Se l'errore menziona lo sha o il conflitto di versione
+    if (errData.message && (errData.message.includes("sha") || errData.message.includes("does not match"))) {
+      console.warn("Rilevato disallineamento dello SHA, recupero l'ultimo valido e riprovo...");
+      
+      const freshSha = await fetchSha();
+      if (freshSha) {
+        body.sha = freshSha;
+        
+        response = await fetch(url, {
+          method: "PUT",
+          headers: {
+            "Authorization": `token ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body)
+        });
+      }
     }
+  }
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+  }
+
+  return await response.json();
+}
 
     async function eliminaFileGitHub(path, message) {
       if (!path || path === '#' || path.startsWith('http')) return;
