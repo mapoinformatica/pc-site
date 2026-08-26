@@ -1,12 +1,12 @@
 [
   {
     "id": 1787755801826,
-    "nome": "dell",
+    "nome": "dell mio",
     "categoria": "desktop",
     "cpu": "i3",
     "ram": "8",
     "disco": "512",
-    "prezzo": 500,
+    "prezzo": 1000,
     "descrizione": "aa",
     "immagine": "img/1787755801826_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787755801826_desktop.pdf"
