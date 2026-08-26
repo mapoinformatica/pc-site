@@ -10,5 +10,17 @@
     "descrizione": "aa",
     "immagine": "img/1787755801826_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787755801826_desktop.pdf"
+  },
+  {
+    "id": 1787756204290,
+    "nome": "prova",
+    "categoria": "notebook",
+    "cpu": "90",
+    "ram": "9",
+    "disco": "9",
+    "prezzo": 899.96,
+    "descrizione": "a",
+    "immagine": "img/1787756204290_images.jpg",
+    "pdf": "pdf/1787756204290_desktop.pdf"
   }
 ]
