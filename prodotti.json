@@ -12,18 +12,6 @@
     "pdf": "pdf/1787753661626_desktop.pdf"
   },
   {
-    "id": 1787754843339,
-    "nome": "hp",
-    "categoria": "desktop",
-    "cpu": "prova",
-    "ram": "8gb",
-    "disco": "512",
-    "prezzo": 780,
-    "descrizione": "tt",
-    "immagine": "img/1787754843339_jpg100-t3-scale100.jpg",
-    "pdf": "pdf/1787754843339_desktop.pdf"
-  },
-  {
     "id": 1787755218730,
     "nome": "hp",
     "categoria": "desktop",
