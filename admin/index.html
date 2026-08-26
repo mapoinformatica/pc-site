@@ -122,14 +122,18 @@
   </div>
 
   <script>
-    // Repository configurata in automatico
     const REPO_NAME = "pc-site";
-
     let prodottiGlobali = [];
 
     document.addEventListener("DOMContentLoaded", () => {
       if (localStorage.getItem("admin_logged") === "true") {
-        mostraPannello();
+        const uInput = localStorage.getItem("gh_user");
+        const tokenInput = localStorage.getItem("gh_token");
+        if (uInput && tokenInput) {
+          mostraPannello();
+        } else {
+          eseguiLogout();
+        }
       }
     });
 
@@ -200,66 +204,51 @@
       });
     }
 
-    async function caricaFileGitHub(path, contentBase64, message) {
-  const user = localStorage.getItem("gh_user");
-  const repo = localStorage.getItem("gh_repo");
-  const token = localStorage.getItem("gh_token");
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+    async function getFileSha(user, repo, token, path) {
+      try {
+        const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}?t=${Date.now()}`, {
+          method: "GET",
+          headers: {
+            "Authorization": `token ${token}`,
+            "Cache-Control": "no-cache"
+          }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.sha) return data.sha;
+        }
+      } catch (e) {}
+      return null;
+    }
 
-  // Funzione d'appoggio per recuperare lo SHA in modo pulito
-  async function fetchSha() {
-    try {
-      const res = await fetch(url + "?t=" + Date.now(), {
-        method: "GET",
+    async function caricaFileGitHub(path, contentBase64, message) {
+      const user = localStorage.getItem("gh_user");
+      const repo = localStorage.getItem("gh_repo");
+      const token = localStorage.getItem("gh_token");
+      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
+
+      let sha = await getFileSha(user, repo, token, path);
+
+      let body = { message, content: contentBase64 };
+      if (sha) body.sha = sha;
+
+      let response = await fetch(url, {
+        method: "PUT",
         headers: {
           "Authorization": `token ${token}`,
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
-        }
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
       });
-      if (res.ok) {
-        const data = await res.json();
-        return data.sha;
-      }
-    } catch (e) {}
-    return null;
-  }
 
-  // 1. Tentiamo di recuperare lo SHA iniziale
-  let currentSha = await fetchSha();
-
-  const body = {
-    message: message,
-    content: contentBase64
-  };
-  
-  if (currentSha) {
-    body.sha = currentSha;
-  }
-
-  // 2. Eseguiamo la richiesta di scrittura (PUT)
-  let response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      "Authorization": `token ${token}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(body)
-  });
-
-  // 3. RETRY DI EMERGENZA: Se GitHub rifiuta perché manca lo SHA o c'è un conflitto, 
-  // rigeneriamo lo SHA all'istante e ripetiamo l'invio una seconda volta in automatico.
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    
-    // Se l'errore menziona lo sha o il conflitto di versione
-    if (errData.message && (errData.message.includes("sha") || errData.message.includes("does not match"))) {
-      console.warn("Rilevato disallineamento dello SHA, recupero l'ultimo valido e riprovo...");
-      
-      const freshSha = await fetchSha();
-      if (freshSha) {
-        body.sha = freshSha;
+      // Se fallisce per conflitti di SHA, attende un istante, rilegge lo SHA fresco e riprova una seconda volta
+      if (!response.ok) {
+        await new Promise(r => setTimeout(r, 1200));
+        sha = await getFileSha(user, repo, token, path);
         
+        body = { message, content: contentBase64 };
+        if (sha) body.sha = sha;
+
         response = await fetch(url, {
           method: "PUT",
           headers: {
@@ -269,16 +258,14 @@
           body: JSON.stringify(body)
         });
       }
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+      }
+
+      return await response.json();
     }
-  }
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
-  }
-
-  return await response.json();
-}
 
     async function eliminaFileGitHub(path, message) {
       if (!path || path === '#' || path.startsWith('http')) return;
@@ -289,11 +276,8 @@
       const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
 
       try {
-        const res = await fetch(url, { headers: { "Authorization": `token ${token}` } });
-        if (!res.ok) return;
-
-        const data = await res.json();
-        const sha = data.sha;
+        const sha = await getFileSha(user, repo, token, path);
+        if (!sha) return;
 
         await fetch(url, {
           method: "DELETE",
@@ -301,10 +285,7 @@
             "Authorization": `token ${token}`,
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({
-            message: message,
-            sha: sha
-          })
+          body: JSON.stringify({ message, sha })
         });
       } catch (err) {
         console.warn(`Impossibile eliminare il file ${path}:`, err);
@@ -324,6 +305,7 @@
 
         if (!res.ok) {
           container.textContent = "Nessun prodotto trovato.";
+          prodottiGlobali = [];
           return;
         }
 
@@ -382,6 +364,7 @@
         const pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
         const imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
 
+        // Caricamento immagine e PDF su GitHub
         await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
         await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
 
@@ -396,6 +379,9 @@
 
         prodottiGlobali.push(newUserProd);
         renderizzaTabella();
+
+        // Piccolo intervallo per consentire a GitHub di allineare l'indice prima del file JSON finale
+        await new Promise(r => setTimeout(r, 600));
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Aggiunto prodotto: ${nome}`);
@@ -433,6 +419,8 @@
 
         prodottiGlobali.splice(index, 1);
         renderizzaTabella();
+
+        await new Promise(r => setTimeout(r, 600));
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
