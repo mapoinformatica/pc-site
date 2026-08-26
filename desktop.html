@@ -135,7 +135,7 @@
 
   <script>
     const currentCategory = 'desktop';
-    const timestamp = new Date().getTime();
+    const timestamp = new Date();
 fetch(`prodotti.json?t=${timestamp}
       .then(res => res.json())
       .then(data => {
