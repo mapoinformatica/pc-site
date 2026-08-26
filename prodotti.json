@@ -58,5 +58,17 @@
     "descrizione": "test",
     "immagine": "img/1787764079956_1000152543.jpg",
     "pdf": "pdf/1787764079956_1787675177253_desktop.pdf"
+  },
+  {
+    "id": 1787768870805,
+    "nome": "lenovo",
+    "categoria": "desktop",
+    "cpu": "i7-13700H",
+    "ram": "8gb",
+    "disco": "1tb",
+    "prezzo": 999,
+    "descrizione": "prova",
+    "immagine": "img/1787768870805_1787760349212_images.jpg",
+    "pdf": "pdf/1787768870805_1787760349212_desktop.pdf"
   }
 ]
