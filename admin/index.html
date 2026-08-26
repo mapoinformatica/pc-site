@@ -570,7 +570,7 @@
         prodottiGlobali.splice(index, 1);
         renderizzaTabella();
 
-        const jsonBase64 = btoa(unespace(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
+        const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
         await caricaFileGitHub("prodotti.json", jsonBase64, `Rimosso prodotto in posizione ${index}`);
 
       } catch (err) {
