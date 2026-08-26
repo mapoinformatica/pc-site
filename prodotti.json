@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": 1787736654872,
+    "nome": "dell",
+    "categoria": "desktop",
+    "descrizione": "dell i5/8gb/512",
+    "immagine": "img/1787736654872_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787736654872_desktop.pdf"
+  }
+]
