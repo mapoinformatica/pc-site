@@ -58,5 +58,17 @@
     "descrizione": "notebook",
     "immagine": "img/1787760757925_images.jpg",
     "pdf": "pdf/1787760757925_desktop.pdf"
+  },
+  {
+    "id": 1787764079956,
+    "nome": "pc",
+    "categoria": "accessori",
+    "cpu": "566",
+    "ram": "77",
+    "disco": "88",
+    "prezzo": 369,
+    "descrizione": "test",
+    "immagine": "img/1787764079956_1000152543.jpg",
+    "pdf": "pdf/1787764079956_1787675177253_desktop.pdf"
   }
 ]
