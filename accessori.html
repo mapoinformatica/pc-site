@@ -119,8 +119,8 @@
     const currentCategory = 'accessori';
 
     // Ricarica senza cache per vedere subito i nuovi inserimenti dell'admin
-    const timestamp = new Date().getTime();
-fetch(`prodotti.json?t=${timestamp}
+    const timestamp = new Date();
+    fetch(`prodotti.json?t=${timestamp}`)
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
