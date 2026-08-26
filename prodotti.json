@@ -1,1 +1,14 @@
-
+[
+  {
+    "id": 1787750692713,
+    "nome": "prova",
+    "categoria": "desktop",
+    "cpu": "prova",
+    "ram": "prova",
+    "disco": "prova",
+    "prezzo": 850,
+    "descrizione": "aaa",
+    "immagine": "img/1787750692713_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787750692713_desktop.pdf"
+  }
+]
