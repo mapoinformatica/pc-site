@@ -9,7 +9,7 @@
     .card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 24px; }
     .form-group { margin-bottom: 16px; }
     label { display: block; font-weight: bold; margin-bottom: 6px; }
-    input[type="text"], input[type="password"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea, input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
     button { background: #0066cc; color: white; border: none; padding: 12px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
     button:hover { background: #0052a3; }
     button:disabled { background: #ccc; }
@@ -17,6 +17,29 @@
     .success { background: #e6fffa; color: #047857; border: 1px solid #a7f3d0; }
     .error { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
     .hidden { display: none; }
+
+    /* Box calcolo prezzi dinamico */
+    .price-calc-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    .price-calc-box p {
+      margin: 4px 0;
+      font-size: 0.9rem;
+      color: #166534;
+      display: flex;
+      justify-content: space-between;
+    }
+    .price-calc-box .total-row {
+      font-weight: bold;
+      border-top: 1px solid #bbf7d0;
+      padding-top: 4px;
+      margin-top: 4px;
+      color: #14532d;
+    }
 
     /* Stili per la lista */
     .product-list-item {
@@ -115,7 +138,6 @@
         </select>
       </div>
       
-      <!-- NUOVI CAMPI AGGIUNTI -->
       <div class="form-group">
         <label for="cpu">CPU</label>
         <input type="text" id="cpu" placeholder="es. Intel Core i7-13700H">
@@ -127,6 +149,18 @@
       <div class="form-group">
         <label for="disco">Disco</label>
         <input type="text" id="disco" placeholder="es. 512GB SSD NVMe">
+      </div>
+
+      <!-- SEZIONE PREZZI -->
+      <div class="form-group">
+        <label for="prezzo">Prezzo Imponibile (€ senza IVA)</label>
+        <input type="number" id="prezzo" step="0.01" min="0" placeholder="es. 850.00" oninput="aggiornaCalcoloPrezzo()" required>
+      </div>
+
+      <div class="price-calc-box">
+        <p><span>Aliquota IVA fissa:</span> <strong>22%</strong></p>
+        <p><span>IVA calcolata:</span> <strong id="valoreIva">€ 0.00</strong></p>
+        <p class="total-row"><span>Prezzo Totale Ivato:</span> <strong id="valoreIvato">€ 0.00</strong></p>
       </div>
 
       <div class="form-group">
@@ -164,6 +198,24 @@
         mostraPannello();
       }
     });
+
+    function aggiornaCalcoloPrezzo() {
+      const inputVal = parseFloat(document.getElementById("prezzo").value);
+      const ivaElement = document.getElementById("valoreIva");
+      const ivatoElement = document.getElementById("valoreIvato");
+
+      if (isNaN(inputVal) || inputVal < 0) {
+        ivaElement.textContent = "€ 0.00";
+        ivatoElement.textContent = "€ 0.00";
+        return;
+      }
+
+      const iva = inputVal * 0.22;
+      const ivato = inputVal + iva;
+
+      ivaElement.textContent = `€ ${iva.toFixed(2)}`;
+      ivatoElement.textContent = `€ ${ivato.toFixed(2)}`;
+    }
 
     async function effettuaLogin() {
       const uInput = document.getElementById("loginUser").value.trim();
@@ -332,10 +384,11 @@
       container.innerHTML = prodottiGlobali.map((p, index) => {
         const title = p.nome || p.title || "Senza titolo";
         const cat = p.categoria || p.category || "";
+        const prezzoDisplay = (p.prezzo !== undefined) ? ` - € ${parseFloat(p.prezzo).toFixed(2)}` : "";
         return `
           <div class="product-list-item">
             <div>
-              <strong>${title}</strong>
+              <strong>${title}</strong>${prezzoDisplay}
               <span class="badge">${cat}</span>
             </div>
             <div class="product-actions">
@@ -355,8 +408,11 @@
       document.getElementById("cpu").value = p.cpu || "";
       document.getElementById("ram").value = p.ram || "";
       document.getElementById("disco").value = p.disco || "";
+      document.getElementById("prezzo").value = p.prezzo || p.price || "";
       document.getElementById("descrizione").value = p.descrizione || "";
       
+      aggiornaCalcoloPrezzo();
+
       document.getElementById("immagine").required = false;
       document.getElementById("pdf").required = false;
 
@@ -378,6 +434,8 @@
     function annullaModifica() {
       document.getElementById("productForm").reset();
       document.getElementById("editIndex").value = "";
+      document.getElementById("valoreIva").textContent = "€ 0.00";
+      document.getElementById("valoreIvato").textContent = "€ 0.00";
       document.getElementById("immagine").required = true;
       document.getElementById("pdf").required = true;
       document.getElementById("imgHelp").style.display = "none";
@@ -405,6 +463,7 @@
         const cpu = document.getElementById("cpu").value.trim();
         const ram = document.getElementById("ram").value.trim();
         const disco = document.getElementById("disco").value.trim();
+        const prezzo = parseFloat(document.getElementById("prezzo").value);
         const descrizione = document.getElementById("descrizione").value.trim();
         const filePdf = document.getElementById("pdf").files[0];
         const fileImg = document.getElementById("immagine").files[0];
@@ -440,6 +499,7 @@
             cpu,
             ram,
             disco,
+            prezzo,
             descrizione,
             immagine: imgPath,
             pdf: pdfPath
@@ -460,6 +520,7 @@
             cpu,
             ram,
             disco,
+            prezzo,
             descrizione,
             immagine: imgPath,
             pdf: pdfPath
