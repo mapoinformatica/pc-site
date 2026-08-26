@@ -1,13 +1,5 @@
 [
   {
-    "id": 1787675118726,
-    "nome": "dell",
-    "categoria": "notebook",
-    "descrizione": "test",
-    "immagine": "img/1787675118726_jpg100-t3-scale100.jpg",
-    "pdf": "pdf/1787675118726_desktop.pdf"
-  },
-  {
     "id": 1787675177253,
     "nome": "Hp",
     "categoria": "desktop",
