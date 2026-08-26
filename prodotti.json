@@ -12,18 +12,6 @@
     "pdf": "pdf/1787759599092_desktop.pdf"
   },
   {
-    "id": 1787759923148,
-    "nome": "dell",
-    "categoria": "desktop",
-    "cpu": "i7-13700H",
-    "ram": "16",
-    "disco": "512",
-    "prezzo": 960,
-    "descrizione": "fff",
-    "immagine": "img/1787759923148_images.jpg",
-    "pdf": "pdf/1787759923148_desktop.pdf"
-  },
-  {
     "id": 1787760349212,
     "nome": "hp",
     "categoria": "desktop",
