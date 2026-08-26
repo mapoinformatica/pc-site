@@ -120,7 +120,7 @@
 
     // Ricarica senza cache per vedere subito i nuovi inserimenti dell'admin
     const timestamp = new Date().getTime();
-    fetch(`https://cdn.jsdelivr.net/gh/mapoinformatica/pc-site@latest/prodotti.json?t=${timestamp}`)
+fetch(`prodotti.json?t=${timestamp}
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
