@@ -1,14 +1,14 @@
 [
   {
-    "id": 1787749890332,
-    "nome": "Dell",
+    "id": 1787750692713,
+    "nome": "prova",
     "categoria": "desktop",
-    "cpu": "i3",
-    "ram": "8gb ddr5",
-    "disco": "512 SSD",
-    "prezzo": 980,
-    "descrizione": "PC",
-    "immagine": "img/1787749890332_jpg100-t3-scale100.jpg",
-    "pdf": "pdf/1787749890332_desktop.pdf"
+    "cpu": "prova",
+    "ram": "prova",
+    "disco": "prova",
+    "prezzo": 850,
+    "descrizione": "aaa",
+    "immagine": "img/1787750692713_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787750692713_desktop.pdf"
   }
 ]
