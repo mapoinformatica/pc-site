@@ -118,8 +118,7 @@
     const currentCategory = 'accessori';
 
     // Ricarica senza cache per vedere subito i nuovi inserimenti dell'admin
-    const timestamp = new Date().getTime();
-    fetch(`https://raw.githubusercontent.com/mapoinformatica/pc-site/refs/heads/main/prodotti.json?t=${timestamp}`)
+    fetch('prodotti.json?' + new Date().getTime())
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
