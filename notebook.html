@@ -136,7 +136,9 @@
   <script>
     const currentCategory = 'notebook';
 
-    fetch('prodotti.json?' + new Date().getTime())
+    const timestamp = new Date().getTime();
+    // Usiamo la CDN di jsDelivr al posto di raw.githubusercontent
+    fetch(`https://cdn.jsdelivr.net/gh/mapoinformatica/pc-site@main/prodotti.json?t=${timestamp}`)
       .then(res => res.json())
       .then(data => {
         const grid = document.getElementById('products-grid');
