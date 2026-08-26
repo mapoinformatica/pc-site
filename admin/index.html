@@ -201,49 +201,77 @@
     }
 
     async function caricaFileGitHub(path, contentBase64, message) {
-      const user = localStorage.getItem("gh_user");
-      const repo = localStorage.getItem("gh_repo");
-      const token = localStorage.getItem("gh_token");
-      // Aggiungiamo un parametro casuale per evitare qualsiasi cache di GitHub durante il controllo dello SHA
-      const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}?t=` + Date.now();
+  const user = localStorage.getItem("gh_user");
+  const repo = localStorage.getItem("gh_repo");
+  const token = localStorage.getItem("gh_token");
+  const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
 
-      let sha = null;
-      try {
-        const res = await fetch(url, { 
-          headers: { 
-            "Authorization": `token ${token}`,
-            "Cache-Control": "no-cache"
-          } 
-        });
-        if (res.ok) {
-          const data = await res.json();
-          sha = data.sha;
-        }
-      } catch (e) {
-        // Se il file non esiste, sha resta null
+  let sha = null;
+  
+  // Tentiamo di recuperare lo SHA attuale del file su GitHub
+  try {
+    const res = await fetch(url + "?t=" + Date.now(), {
+      headers: { 
+        "Authorization": `token ${token}`,
+        "Cache-Control": "no-cache"
       }
-
-      // L'URL per la scrittura PUT non deve avere parametri di query alla fine
-      const putUrl = `https://api.github.com/repos/${user}/${repo}/contents/${path}`;
-
-      const body = { message, content: contentBase64 };
-      if (sha) body.sha = sha;
-
-      const response = await fetch(putUrl, {
-        method: "PUT",
-        headers: {
-          "Authorization": `token ${token}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
-      }
-      return await response.json();
+    });
+    
+    if (res.ok) {
+      const data = await res.json();
+      sha = data.sha;
     }
+  } catch (e) {
+    console.warn("Impossibile recuperare lo SHA preventivamente, procediamo.");
+  }
+
+  // Costruiamo il corpo della richiesta
+  const body = { message, content: contentBase64 };
+  if (sha) {
+    body.sha = sha;
+  }
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Authorization": `token ${token}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  // Se per caso GitHub rifiuta perché manca lo SHA ma il file esiste, 
+  // facciamo un tentativo di emergenza recuperandolo al volo e riprovando
+  if (!response.ok && path === "prodotti.json") {
+    const errData = await response.json().catch(() => ({}));
+    
+    if (errData.message && errData.message.includes("sha")) {
+      const retryRes = await fetch(url + "?t=" + Date.now(), {
+        headers: { "Authorization": `token ${token}`, "Cache-Control": "no-cache" }
+      });
+      if (retryRes.ok) {
+        const retryData = await retryRes.json();
+        body.sha = retryData.sha;
+        
+        const retryResponse = await fetch(url, {
+          method: "PUT",
+          headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        
+        if (retryResponse.ok) return await retryResponse.json();
+      }
+    }
+    throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+  }
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(`Errore caricamento ${path}: ${errData.message || response.statusText}`);
+  }
+
+  return await response.json();
+}
 
     async function eliminaFileGitHub(path, message) {
       if (!path || path === '#' || path.startsWith('http')) return;
