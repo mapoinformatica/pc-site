@@ -5,6 +5,13 @@ body {
   color: #333;
 }
 
+.header-logo {
+  display: block;
+  max-height: 45px; /* Regola l'altezza massima a piacimento */
+  width: auto;
+  margin-bottom: 12px; /* Spazio tra il logo e la scritta Catalogo Prodotti */
+}
+
 .container {
   width: 90%;
   max-width: 1100px;
