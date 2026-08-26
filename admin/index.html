@@ -114,6 +114,21 @@
           <option value="accessori">Accessori</option>
         </select>
       </div>
+      
+      <!-- NUOVI CAMPI AGGIUNTI -->
+      <div class="form-group">
+        <label for="cpu">CPU</label>
+        <input type="text" id="cpu" placeholder="es. Intel Core i7-13700H">
+      </div>
+      <div class="form-group">
+        <label for="ram">RAM</label>
+        <input type="text" id="ram" placeholder="es. 16GB DDR5">
+      </div>
+      <div class="form-group">
+        <label for="disco">Disco</label>
+        <input type="text" id="disco" placeholder="es. 512GB SSD NVMe">
+      </div>
+
       <div class="form-group">
         <label for="descrizione">Descrizione</label>
         <textarea id="descrizione" rows="4" required></textarea>
@@ -337,9 +352,11 @@
       document.getElementById("editIndex").value = index;
       document.getElementById("nome").value = p.nome || "";
       document.getElementById("categoria").value = p.categoria || "desktop";
+      document.getElementById("cpu").value = p.cpu || "";
+      document.getElementById("ram").value = p.ram || "";
+      document.getElementById("disco").value = p.disco || "";
       document.getElementById("descrizione").value = p.descrizione || "";
       
-      // I file non sono obbligatori in modifica
       document.getElementById("immagine").required = false;
       document.getElementById("pdf").required = false;
 
@@ -385,11 +402,14 @@
       try {
         const nome = document.getElementById("nome").value.trim();
         const categoria = document.getElementById("categoria").value;
+        const cpu = document.getElementById("cpu").value.trim();
+        const ram = document.getElementById("ram").value.trim();
+        const disco = document.getElementById("disco").value.trim();
         const descrizione = document.getElementById("descrizione").value.trim();
         const filePdf = document.getElementById("pdf").files[0];
         const fileImg = document.getElementById("immagine").files[0];
 
-        let imgPath, pdfId, timestamp, existingProd = null;
+        let imgPath, pdfPath, timestamp, existingProd = null;
 
         if (isEditing) {
           existingProd = prodottiGlobali[editIndex];
@@ -397,7 +417,6 @@
           imgPath = existingProd.immagine || existingProd.img;
           pdfPath = existingProd.pdf;
 
-          // Se è stata caricata una nuova immagine, la carichiamo ed eliminiamo la vecchia
           if (fileImg) {
             imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
             await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Aggiornata immagine: ${fileImg.name}`);
@@ -406,7 +425,6 @@
             }
           }
 
-          // Se è stato caricato un nuovo PDF, lo carichiamo ed eliminiamo il vecchio
           if (filePdf) {
             pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
             await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Aggiornato PDF: ${filePdf.name}`);
@@ -419,6 +437,9 @@
             id: timestamp,
             nome,
             categoria,
+            cpu,
+            ram,
+            disco,
             descrizione,
             immagine: imgPath,
             pdf: pdfPath
@@ -436,6 +457,9 @@
             id: timestamp,
             nome,
             categoria,
+            cpu,
+            ram,
+            disco,
             descrizione,
             immagine: imgPath,
             pdf: pdfPath
