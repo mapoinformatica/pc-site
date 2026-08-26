@@ -10,5 +10,17 @@
     "descrizione": "aa",
     "immagine": "img/1787755801826_jpg100-t3-scale100.jpg",
     "pdf": "pdf/1787755801826_desktop.pdf"
+  },
+  {
+    "id": 1787756020722,
+    "nome": "test",
+    "categoria": "desktop",
+    "cpu": "8",
+    "ram": "8",
+    "disco": "8",
+    "prezzo": 888,
+    "descrizione": "8",
+    "immagine": "img/1787756020722_jpg100-t3-scale100.jpg",
+    "pdf": "pdf/1787756020722_desktop.pdf"
   }
 ]
