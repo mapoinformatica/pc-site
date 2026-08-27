@@ -93,3 +93,46 @@ body {
 .btn-download:hover {
   background: #1d4ed8;
 }
+
+/* Stili per il footer con link legali */
+.main-footer-legal {
+  text-align: center;
+  padding: 25px 0;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 50px;
+  color: #64748b;
+  font-size: 0.9rem;
+  background-color: #ffffff;
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+}
+
+.footer-links a {
+  color: #475569;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Su schermi medi/larghi allinea il copyright a sinistra e i link a destra */
+@media (min-width: 768px) {
+  .footer-content {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
