@@ -22,17 +22,5 @@
     "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
     "immagine": "img/1787760349212_VX320.jpg",
     "pdf": "pdf/1787760349212_WKS_ULTRA_5_16_512.pdf"
-  },
-  {
-    "id": 1787768971621,
-    "nome": "Lenovo",
-    "categoria": "desktop",
-    "cpu": "i7-13700H",
-    "ram": "16gb",
-    "disco": "1TB SSD",
-    "prezzo": 780,
-    "descrizione": "test",
-    "immagine": "img/1787768971621_1787760349212_images.jpg",
-    "pdf": "pdf/1787768971621_1787760349212_desktop.pdf"
   }
 ]
