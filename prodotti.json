@@ -24,18 +24,6 @@
     "pdf": "pdf/1787760349212_WKS_ULTRA_5_16_512.pdf"
   },
   {
-    "id": 1787760757925,
-    "nome": "Lenovo",
-    "categoria": "notebook",
-    "cpu": "i9-9999",
-    "ram": "16gb",
-    "disco": "1TB SSD",
-    "prezzo": 450,
-    "descrizione": "notebook",
-    "immagine": "img/1787760757925_images.jpg",
-    "pdf": "pdf/1787760757925_desktop.pdf"
-  },
-  {
     "id": 1787764079956,
     "nome": "pc",
     "categoria": "accessori",
