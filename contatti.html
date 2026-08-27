@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contatti - Mapo Informatica</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .contact-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+    .contact-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .contact-card h3 {
+      margin-top: 0;
+      color: #1e293b;
+      font-size: 1.1rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .contact-card p, .contact-card address {
+      color: #475569;
+      font-style: normal;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .contact-card a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .contact-card a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="main-header">
+    <div class="container">
+      <img src="logo/LOGO_MAPO_2016.gif" alt="Logo Mapo Informatica" class="header-logo">
+      <h1>Catalogo Prodotti</h1>
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="desktop.html">PC-Desktop</a>
+        <a href="notebook.html">Notebook</a>
+        <a href="accessori.html">Accessori</a>
+        <a href="contatti.html" class="active">Contatti</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container page-content">
+    <div class="contact-container">
+      <h2>Contattaci</h2>
+      <p>Hai bisogno di informazioni sui prodotti o di una configurazione personalizzata? Ecco come puoi metterti in contatto con noi:</p>
+
+      <div class="contact-grid">
+        
+        <div class="contact-card">
+          <h3>📍 Indirizzo & Sede</h3>
+          <address>
+            <strong>MP Computer</strong><br>
+            Via Giorgio Ercolani n.2/C<br>
+            [40122 Bologna]
+          </address>
+        </div>
+
+        <div class="contact-card">
+          <h3>📞 Telefono & Contatti</h3>
+          <p>
+            Telefono: <a href="tel:+390000000000">051/6493419</a><br>
+            Email: <a href="mailto:info@mapoinformatica.net">mp-computer@eur.it</a>
+          </p>
+        </div>
+
+        <div class="contact-card">
+          <h3>⏱️ Orari di Apertura</h3>
+          <p>
+            Lunedì: 14:30 - 18:30<br>
+            Martedì - Venerdì: 09:30 - 13:00 | 14:30 - 18:30<br>
+            Sabato e Domenica: Chiuso
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; margin-top: 40px; color: #64748b;">
+    <div class="container">
+      <p>&copy; Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
