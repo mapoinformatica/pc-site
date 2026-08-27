@@ -13,15 +13,15 @@
   },
   {
     "id": 1787760349212,
-    "nome": "hp",
+    "nome": "WORKSTATION ULTRA 5 16 512 - ANTEC",
     "categoria": "desktop",
-    "cpu": "8",
-    "ram": "8",
-    "disco": "8",
-    "prezzo": 888,
-    "descrizione": "notebook",
-    "immagine": "img/1787760349212_images.jpg",
-    "pdf": "pdf/1787760349212_desktop.pdf"
+    "cpu": "Ultra 5 245K",
+    "ram": "16",
+    "disco": "512",
+    "prezzo": 868.88,
+    "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
+    "immagine": "img/1787760349212_VX320.jpg",
+    "pdf": "pdf/1787760349212_WKS_ULTRA_5_16_512.pdf"
   },
   {
     "id": 1787760757925,
