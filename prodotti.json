@@ -24,18 +24,6 @@
     "pdf": "pdf/1787760349212_WKS_ULTRA_5_16_512.pdf"
   },
   {
-    "id": 1787764079956,
-    "nome": "pc",
-    "categoria": "accessori",
-    "cpu": "566",
-    "ram": "77",
-    "disco": "88",
-    "prezzo": 369,
-    "descrizione": "test",
-    "immagine": "img/1787764079956_1000152543.jpg",
-    "pdf": "pdf/1787764079956_1787675177253_desktop.pdf"
-  },
-  {
     "id": 1787768870805,
     "nome": "lenovo",
     "categoria": "desktop",
