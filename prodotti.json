@@ -46,5 +46,17 @@
     "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
     "immagine": "img/1787904819027_VX320.jpg",
     "pdf": "pdf/1787904819027_WKS_ULTRA_7_16_1024.pdf"
+  },
+  {
+    "id": 1787904865315,
+    "nome": "WORKSTATION ULTRA 7 32 1024",
+    "categoria": "desktop",
+    "cpu": "Ultra 7 265K",
+    "ram": "32",
+    "disco": "1024",
+    "prezzo": 1179,
+    "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast + Mouse",
+    "immagine": "img/1787904865315_VX320.jpg",
+    "pdf": "pdf/1787904865315_WKS_ULTRA_7_32_1024.pdf"
   }
 ]
