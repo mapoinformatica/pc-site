@@ -157,14 +157,14 @@
   },
   {
     "id": 1787915501005,
-    "nome": "WORKSTATION ULTRA 5 16 512 - ANTEC",
+    "nome": "WORKSTATION ULTRA 5 32 512 - ANTEC",
     "categoria": "desktop",
     "cpu": "Ultra 5 245K",
     "ram": "32",
     "disco": "512",
-    "prezzo": 1069,
+    "prezzo": 1029,
     "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
     "immagine": "img/1787760349212_VX320.jpg",
-    "pdf": "pdf/1787760349212_WKS_ULTRA_5_16_512.pdf"
+    "pdf": "pdf/1787915501005_WKS_ULTRA_5_32_512.pdf"
   }
 ]
