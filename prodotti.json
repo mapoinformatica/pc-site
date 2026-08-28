@@ -82,5 +82,17 @@
     "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Monitor da 15.6\" Anti-glare, 60Hz, Intel® Core™ 5 120U, RAM 16GB, 512GB SSD, Windows 11 Home, COLORE BLU",
     "immagine": "img/1787905450307_VIVOBOOK_15_BLU.jpg",
     "pdf": "pdf/1787905450307_ASUS_Vivobook_15.pdf"
+  },
+  {
+    "id": 1787906039747,
+    "nome": "ASUS Vivobook 16 X1605VA",
+    "categoria": "notebook",
+    "cpu": "Intel® Core™ i7-13620H",
+    "ram": "16",
+    "disco": "1024",
+    "prezzo": 579.9,
+    "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Monitor da 16\" Anti-glare, 60Hz, Intel® Core™ i7-13620H, RAM 16GB, 1TB SSD, Win 11Home, COLORE Argento",
+    "immagine": "img/1787906039747_ASUS_Vivobook_16_X1605VA.jpg",
+    "pdf": "pdf/1787906039747_ASUS_Vivobook_16.pdf"
   }
 ]
