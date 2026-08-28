@@ -130,5 +130,17 @@
     "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Display: 15,3 2k  AMD Ryzen 9 8940HX RAM: 16 GB SSD 1000 GB Windows 11 Home GeForce RTX 5060 8GB",
     "immagine": "img/1787908242019_HyperX_OMEN_16.jpg",
     "pdf": "pdf/1787908242019_HyperX_OMEN_16_inch_Gaming_Laptop_PC_16-am2005nlx.pdf"
+  },
+  {
+    "id": 1787910534235,
+    "nome": "DELL PRO 15 ESSENTIAL PV15250",
+    "categoria": "notebook",
+    "cpu": "I7-1355U",
+    "ram": "16",
+    "disco": "1024",
+    "prezzo": 919,
+    "descrizione": "NB DELL PRO 15 ESSENTIAL PV15250 1W7NX 15.6\" FHD I7-1355U 16DDR5 1TBSSD W11PRO NOAC CAM 3USB HDMI 1YOS WIFI BT - NUOVO\nNOTA: ALIMENTATORE DELL-5XW82 IN VENDITA SEPARATAMENTE 28,90+IVA",
+    "immagine": "img/1787910534235_DELL_PRO_15.jpg",
+    "pdf": "pdf/1787910534235_1W7NX_DELL_PRO_15.pdf"
   }
 ]
