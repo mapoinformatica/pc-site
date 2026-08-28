@@ -1,17 +1,5 @@
 [
   {
-    "id": 1787759599092,
-    "nome": "HP Laptop 15-fd1004sl",
-    "categoria": "notebook",
-    "cpu": "Core Ultra 7 155H",
-    "ram": "16GBg DDR5",
-    "disco": "512 SSD",
-    "prezzo": 569,
-    "descrizione": "PC Portatile 15\", Display FHD, Notebook, (Intel Core Ultra 7 155H, RAM 16GB, SSD 512GB, Windows 11), Computer Portatile, Uso quotidiano, Tastiera Italiana, QWERTY, Argento",
-    "immagine": "img/1787759599092_hp_15_fd.jpg",
-    "pdf": "pdf/1787759599092_fd_15.pdf"
-  },
-  {
     "id": 1787760349212,
     "nome": "WORKSTATION ULTRA 5 16 512 - ANTEC",
     "categoria": "desktop",
