@@ -94,5 +94,17 @@
     "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Monitor da 16\" Anti-glare, 60Hz, Intel® Core™ i7-13620H, RAM 16GB, 1TB SSD, Win 11Home, COLORE Argento",
     "immagine": "img/1787906039747_ASUS_Vivobook_16_X1605VA.jpg",
     "pdf": "pdf/1787906039747_ASUS_Vivobook_16.pdf"
+  },
+  {
+    "id": 1787906616675,
+    "nome": "MSI Prestige 16 AI Studio B1VEG",
+    "categoria": "notebook",
+    "cpu": "Intel Core Ultra 7 155H",
+    "ram": "16",
+    "disco": "1024",
+    "prezzo": 719,
+    "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Notebook 16\" QHD+ 60Hz, Intel Core Ultra 7 155H, Nvidia RTX 4050, 6GB GDDR6, 1TB SSD PCIe4, 16GB RAM 6400MHz, WiFi 7, Win 11 Home Layout ITA Grigio",
+    "immagine": "img/1787906616675_MSI_PRESTIGE_16_AI_STUDIO.jpg",
+    "pdf": "pdf/1787906616675_MSI_PRESTIGE_16_AI_STUDIO.pdf"
   }
 ]
