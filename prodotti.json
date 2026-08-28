@@ -118,5 +118,17 @@
     "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA -  Notebook Gaming 15.6\" FHD 144Hz, Intel Core i9-14900HX, Nvidia RTX 5060 8GB GDDR7, 1TB SSD PCIe4, 16GB RAM DDR5, WiFi 6E, Win 11 Home",
     "immagine": "img/1787907683699_MSI_Katana_15_HX_B14WFK.jpg",
     "pdf": "pdf/1787907683699_MSI_KATANA.pdf"
+  },
+  {
+    "id": 1787908242019,
+    "nome": "HyperX OMEN 16 inch Gaming Laptop PC 16",
+    "categoria": "notebook",
+    "cpu": "AMD Ryzen 9-8940HX",
+    "ram": "16",
+    "disco": "1024",
+    "prezzo": 1299,
+    "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Display: 15,3 2k  AMD Ryzen 9 8940HX RAM: 16 GB SSD 1000 GB Windows 11 Home GeForce RTX 5060 8GB",
+    "immagine": "img/1787908242019_HyperX_OMEN_16.jpg",
+    "pdf": "pdf/1787908242019_HyperX_OMEN_16_inch_Gaming_Laptop_PC_16-am2005nlx.pdf"
   }
 ]
