@@ -434,7 +434,7 @@
 
       const imgHelp = document.getElementById("imgHelp");
       imgHelp.style.display = "block";
-      imgHelp.textContent = `File attuale: ${p.immagine || 'Nessuno'} (lascia vuoto per non modificarlo)`;
+      imgHelp.textContent = `File attuale: ${p.immagine || p.img || 'Nessuno'} (lascia vuoto per non modificarlo)`;
 
       const pdfHelp = document.getElementById("pdfHelp");
       pdfHelp.style.display = "block";
@@ -450,8 +450,12 @@
     function duplicaProdotto(index) {
       const p = prodottiGlobali[index];
       
-      // Mettiamo il form in modalità nuovo inserimento pulendo l'indice
       document.getElementById("editIndex").value = "";
+      
+      // Salviamo temporaneamente i percorsi originali nel form
+      const formEl = document.getElementById("productForm");
+      formEl.dataset.origImg = p.immagine || p.img || "";
+      formEl.dataset.origPdf = p.pdf || "";
       
       // Precompila i campi aggiungendo "(Copia)" al nome
       document.getElementById("nome").value = (p.nome || "") + " (Copia)";
@@ -464,13 +468,12 @@
       
       aggiornaCalcoloPrezzo();
 
-      // I file non sono obbligatori: se non ne carichi di nuovi, la funzione di salvataggio erediterà i percorsi originali
       document.getElementById("immagine").required = false;
       document.getElementById("pdf").required = false;
 
       const imgHelp = document.getElementById("imgHelp");
       imgHelp.style.display = "block";
-      imgHelp.textContent = `File originale ereditato: ${p.immagine || 'Nessuno'} (caricane uno nuovo se desideri cambiarlo)`;
+      imgHelp.textContent = `File originale ereditato: ${p.immagine || p.img || 'Nessuno'} (caricane uno nuovo se desideri cambiarlo)`;
 
       const pdfHelp = document.getElementById("pdfHelp");
       pdfHelp.style.display = "block";
@@ -484,7 +487,10 @@
     }
 
     function annullaModifica() {
-      document.getElementById("productForm").reset();
+      const formEl = document.getElementById("productForm");
+      formEl.reset();
+      delete formEl.dataset.origImg;
+      delete formEl.dataset.origPdf;
       document.getElementById("editIndex").value = "";
       document.getElementById("valoreIva").textContent = "€ 0.00";
       document.getElementById("valoreIvato").textContent = "€ 0.00";
@@ -558,23 +564,23 @@
           };
 
         } else {
-          // Controlliamo se stiamo duplicando (ereditando file esistenti) o creando da zero
-          // Se stiamo duplicando da un elemento precedentemente popolato ma non abbiamo selezionato file nuovi, possiamo recuperare i vecchi path se desiderato
           timestamp = Date.now();
+          const formDataset = document.getElementById("productForm").dataset;
           
           if (fileImg) {
             imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
             await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
           } else {
-            // Se nessun file immagine è stato selezionato durante la duplicazione, riutilizziamo il testo d'aiuto o lasciamo vuoto
-            imgPath = "img/placeholder.jpg"; 
+            // Eredita l'immagine originale del prodotto duplicato, se disponibile
+            imgPath = formDataset.origImg || ""; 
           }
 
           if (filePdf) {
             pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
-            await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+            await caricaFileGitHub(pdfPath, await fileToBase64(fileImg), `Upload PDF: ${filePdf.name}`);
           } else {
-            pdfPath = "";
+            // Eredita il PDF originale del prodotto duplicato, se disponibile
+            pdfPath = formDataset.origPdf || "";
           }
 
           const newUserProd = {
