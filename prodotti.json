@@ -154,5 +154,17 @@
     "descrizione": "REFEURBISCED 5 PEZZI -  Dell precision 5560 i7-11850h 16gb (1x 16GB, 4 slot in totale) 512gb nvme RTX A2000 6GB Win 11 Pro MAR REF",
     "immagine": "img/1787914061563_precision_5560.jpg",
     "pdf": "pdf/1787914061563_precision_5560.pdf"
+  },
+  {
+    "id": 1787914472620,
+    "nome": "WORKSTATION ULTRA 5 32 512 - ANTEC",
+    "categoria": "desktop",
+    "cpu": "Ultra 5 245K",
+    "ram": "32",
+    "disco": "512",
+    "prezzo": 1069,
+    "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
+    "immagine": "img/placeholder.jpg",
+    "pdf": ""
   }
 ]
