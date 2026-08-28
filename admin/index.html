@@ -577,7 +577,7 @@
 
           if (filePdf) {
             pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
-            await caricaFileGitHub(pdfPath, await fileToBase64(fileImg), `Upload PDF: ${filePdf.name}`);
+            await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
           } else {
             // Eredita il PDF originale del prodotto duplicato, se disponibile
             pdfPath = formDataset.origPdf || "";
