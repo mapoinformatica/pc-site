@@ -106,5 +106,17 @@
     "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - Notebook 16\" QHD+ 60Hz, Intel Core Ultra 7 155H, Nvidia RTX 4050, 6GB GDDR6, 1TB SSD PCIe4, 16GB RAM 6400MHz, WiFi 7, Win 11 Home Layout ITA Grigio",
     "immagine": "img/1787906616675_MSI_PRESTIGE_16_AI_STUDIO.jpg",
     "pdf": "pdf/1787906616675_MSI_PRESTIGE_16_AI_STUDIO.pdf"
+  },
+  {
+    "id": 1787907683699,
+    "nome": "MSI Katana 15 HX B14WFK",
+    "categoria": "notebook",
+    "cpu": "Intel Core i9-14900HX",
+    "ram": "16",
+    "disco": "1024",
+    "prezzo": 1259,
+    "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA -  Notebook Gaming 15.6\" FHD 144Hz, Intel Core i9-14900HX, Nvidia RTX 5060 8GB GDDR7, 1TB SSD PCIe4, 16GB RAM DDR5, WiFi 6E, Win 11 Home",
+    "immagine": "img/1787907683699_MSI_Katana_15_HX_B14WFK.jpg",
+    "pdf": "pdf/1787907683699_MSI_KATANA.pdf"
   }
 ]
