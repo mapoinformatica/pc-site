@@ -52,6 +52,7 @@
     }
     .product-list-item:last-child { border-bottom: none; }
     .product-actions { display: flex; gap: 6px; }
+    
     .btn-delete {
       background: #dc2626;
       color: white;
@@ -62,6 +63,7 @@
       font-size: 0.85rem;
     }
     .btn-delete:hover { background: #b91c1c; }
+
     .btn-edit {
       background: #0284c7;
       color: white;
@@ -72,6 +74,18 @@
       font-size: 0.85rem;
     }
     .btn-edit:hover { background: #0369a1; }
+
+    .btn-duplicate {
+      background: #d97706;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .btn-duplicate:hover { background: #b45309; }
+
     .btn-cancel {
       background: #64748b;
       margin-top: 8px;
@@ -393,6 +407,7 @@
               <span class="badge">${cat}</span>
             </div>
             <div class="product-actions">
+              <button class="btn-duplicate" onclick="duplicaProdotto(${index})">Duplica</button>
               <button class="btn-edit" onclick="preparaModifica(${index})">Modifica</button>
               <button class="btn-delete" onclick="eliminaProdotto(${index})">Elimina</button>
             </div>
@@ -427,6 +442,42 @@
 
       document.getElementById("formTitle").textContent = "Modifica Prodotto";
       document.getElementById("submitBtn").textContent = "Salva Modifiche";
+      document.getElementById("cancelEditBtn").classList.remove("hidden");
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function duplicaProdotto(index) {
+      const p = prodottiGlobali[index];
+      
+      // Mettiamo il form in modalità nuovo inserimento pulendo l'indice
+      document.getElementById("editIndex").value = "";
+      
+      // Precompila i campi aggiungendo "(Copia)" al nome
+      document.getElementById("nome").value = (p.nome || "") + " (Copia)";
+      document.getElementById("categoria").value = p.categoria || "desktop";
+      document.getElementById("cpu").value = p.cpu || "";
+      document.getElementById("ram").value = p.ram || "";
+      document.getElementById("disco").value = p.disco || "";
+      document.getElementById("prezzo").value = p.prezzo || p.price || "";
+      document.getElementById("descrizione").value = p.descrizione || "";
+      
+      aggiornaCalcoloPrezzo();
+
+      // I file non sono obbligatori: se non ne carichi di nuovi, la funzione di salvataggio erediterà i percorsi originali
+      document.getElementById("immagine").required = false;
+      document.getElementById("pdf").required = false;
+
+      const imgHelp = document.getElementById("imgHelp");
+      imgHelp.style.display = "block";
+      imgHelp.textContent = `File originale ereditato: ${p.immagine || 'Nessuno'} (caricane uno nuovo se desideri cambiarlo)`;
+
+      const pdfHelp = document.getElementById("pdfHelp");
+      pdfHelp.style.display = "block";
+      pdfHelp.textContent = `File originale ereditato: ${p.pdf || 'Nessuno'} (caricane uno nuovo se desideri cambiarlo)`;
+
+      document.getElementById("formTitle").textContent = "Pubblica Nuovo Prodotto (Duplicato)";
+      document.getElementById("submitBtn").textContent = "Salva come Nuovo Prodotto";
       document.getElementById("cancelEditBtn").classList.remove("hidden");
 
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -507,12 +558,24 @@
           };
 
         } else {
+          // Controlliamo se stiamo duplicando (ereditando file esistenti) o creando da zero
+          // Se stiamo duplicando da un elemento precedentemente popolato ma non abbiamo selezionato file nuovi, possiamo recuperare i vecchi path se desiderato
           timestamp = Date.now();
-          pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
-          imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+          
+          if (fileImg) {
+            imgPath = `img/${timestamp}_${fileImg.name.replace(/\s+/g, '_')}`;
+            await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
+          } else {
+            // Se nessun file immagine è stato selezionato durante la duplicazione, riutilizziamo il testo d'aiuto o lasciamo vuoto
+            imgPath = "img/placeholder.jpg"; 
+          }
 
-          await caricaFileGitHub(imgPath, await fileToBase64(fileImg), `Upload Immagine: ${fileImg.name}`);
-          await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+          if (filePdf) {
+            pdfPath = `pdf/${timestamp}_${filePdf.name.replace(/\s+/g, '_')}`;
+            await caricaFileGitHub(pdfPath, await fileToBase64(filePdf), `Upload PDF: ${filePdf.name}`);
+          } else {
+            pdfPath = "";
+          }
 
           const newUserProd = {
             id: timestamp,
@@ -533,11 +596,11 @@
         renderizzaTabella();
 
         const jsonBase64 = btoa(unescape(encodeURIComponent(JSON.stringify(prodottiGlobali, null, 2))));
-        const commitMsg = isEditing ? `Aggiornato prodotto: ${nome}` : `Aggiunto prodotto: ${nome}`;
+        const commitMsg = isEditing ? `Aggiornato prodotto: ${nome}` : `Aggiunto prodotto (o duplicato): ${nome}`;
         await caricaFileGitHub("prodotti.json", jsonBase64, commitMsg);
 
         status.className = "success";
-        status.textContent = isEditing ? "Prodotto modificato con successo!" : "Prodotto pubblicato con successo!";
+        status.textContent = isEditing ? "Prodotto modificato con successo!" : "Prodotto pubblicato/duplicato con successo!";
         
         annullaModifica();
 
