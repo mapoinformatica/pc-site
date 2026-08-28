@@ -70,5 +70,17 @@
     "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
     "immagine": "img/1787904915795_VX320.jpg",
     "pdf": "pdf/1787904915795_WKS_ULTRA_7_64_1024.pdf"
+  },
+  {
+    "id": 1787905450307,
+    "nome": "ASUS Vivobook 15 F1504",
+    "categoria": "notebook",
+    "cpu": "Intel® Core™ 5 120U",
+    "ram": "16",
+    "disco": "512",
+    "prezzo": 449,
+    "descrizione": "Monitor da 15.6\" Anti-glare, 60Hz, Intel® Core™ 5 120U, RAM 16GB, 512GB SSD, Windows 11 Home, COLORE BLU",
+    "immagine": "img/1787905450307_VIVOBOOK_15_BLU.jpg",
+    "pdf": "pdf/1787905450307_ASUS_Vivobook_15.pdf"
   }
 ]
