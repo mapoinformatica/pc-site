@@ -142,5 +142,17 @@
     "descrizione": "NB DELL PRO 15 ESSENTIAL PV15250 1W7NX 15.6\" FHD I7-1355U 16DDR5 1TBSSD W11PRO NOAC CAM 3USB HDMI 1YOS WIFI BT - NUOVO\nNOTA: ALIMENTATORE DELL-5XW82 IN VENDITA SEPARATAMENTE 28,90+IVA",
     "immagine": "img/1787910534235_DELL_PRO_15_PV15.jpg",
     "pdf": "pdf/1787910534235_1W7NX_DELL_PRO_15.pdf"
+  },
+  {
+    "id": 1787913946891,
+    "nome": "REF HP Zbook Fury G8 15,6”",
+    "categoria": "notebook",
+    "cpu": "i7-11850H",
+    "ram": "16",
+    "disco": "512",
+    "prezzo": 1018,
+    "descrizione": "REFEURBISCED 3 PEZZI - REF HP Zbook Fury G8 15,6” i7-11850H 16gb (2x 8GB, 4 slot in totale) 512nvme T1200 4gb Win 11 Pro MAR",
+    "immagine": "img/1787913946891_HP_Zbook_Fury_G8.jpg",
+    "pdf": "pdf/1787913946891_HP_Zbook_Fury_G8.pdf"
   }
 ]
