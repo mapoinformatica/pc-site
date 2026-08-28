@@ -166,5 +166,17 @@
     "descrizione": "Workstation Antec VX320ARGB P/N: 0-761345-10234-6 alimentatore 650 WATT 80plus -Windows 11 PRO - Tast+Mouse",
     "immagine": "img/1787760349212_VX320.jpg",
     "pdf": "pdf/1787915501005_WKS_ULTRA_5_32_512.pdf"
+  },
+  {
+    "id": 1787921509030,
+    "nome": "ThinkStation P5",
+    "categoria": "desktop",
+    "cpu": "Intel Xeon  W3-2525 3,5GHZ",
+    "ram": "32",
+    "disco": "1024",
+    "prezzo": 2454.5,
+    "descrizione": "EX DEMO/REF ThinkStation P5 30GA009CTO Workstation Lenovo personalizzata Intel Xeon w3-2525 ,8C (8P + 0E)/16T, 3.5/4.5GHz, 22.5MB -  2x 16GB RDIMM DDR5-4800 ECC - 1x 1TB SSD M.2 2280 PCIe 4.0x4 NVMe Opal - Windows 11 Pro for workstations - Nvidia RTX 5060 8GB DDR6",
+    "immagine": "img/1787921509030_ThinkStation_P5_CTO.jpg",
+    "pdf": "pdf/1787921509030_ThinkStation_P5_CTO.pdf"
   }
 ]
