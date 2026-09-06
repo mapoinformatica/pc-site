@@ -178,5 +178,17 @@
     "descrizione": "EX DEMO/REF ThinkStation P5 30GA009CTO Workstation Lenovo personalizzata Intel Xeon w3-2525 ,8C (8P + 0E)/16T, 3.5/4.5GHz, 22.5MB -  2x 16GB RDIMM DDR5-4800 ECC - 1x 1TB SSD M.2 2280 PCIe 4.0x4 NVMe Opal - Windows 11 Pro for workstations - Nvidia RTX 5060 8GB DDR6",
     "immagine": "img/1787921509030_ThinkStation_P5_CTO.jpg",
     "pdf": "pdf/1787921509030_ThinkStation_P5_CTO.pdf"
+  },
+  {
+    "id": 1788717239991,
+    "nome": "WKS ALTISSIME PRESTAZIONI  RYZEN 9 9950X3D2D",
+    "categoria": "desktop",
+    "cpu": "AMD RYZEN 9 9950X3D2D",
+    "ram": "32",
+    "disco": "1024GB",
+    "prezzo": 2155,
+    "descrizione": "Workstation Corsair 4000D con alimentatore 850 WATT 80plus -Windows 11 PRO - Tast+Mouse - NUOVA CPU CPU AMD ryzen 9 9950X3D2D",
+    "immagine": "img/1788717239991_CORSAIR_4000D.jpg",
+    "pdf": "pdf/1788717239991_WKS_ALTISSIME_PRESTAZIONI_RYZEN_9_9950X3D2D.pdf"
   }
 ]
