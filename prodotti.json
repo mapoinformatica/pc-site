@@ -190,5 +190,17 @@
     "descrizione": "Workstation Corsair 4000D con alimentatore 850 WATT 80plus -Windows 11 PRO - Tast+Mouse - NUOVA CPU CPU AMD ryzen 9 9950X3D2D",
     "immagine": "img/1788717239991_CORSAIR_4000D.jpg",
     "pdf": "pdf/1788717239991_WKS_ALTISSIME_PRESTAZIONI_RYZEN_9_9950X3D2D.pdf"
+  },
+  {
+    "id": 1788717366750,
+    "nome": "WKS ALTE PRESTAZIONI  INTEL ULTRA 9 285K",
+    "categoria": "desktop",
+    "cpu": "INTEL ULTRA 9 285K",
+    "ram": "32",
+    "disco": "1024GB",
+    "prezzo": 1615,
+    "descrizione": "Workstation Corsair 4000D con alimentatore 850 WATT 80plus -Windows 11 PRO - Tast+Mouse - CPU INTEL ULTRA 9 285K",
+    "immagine": "img/1788717366750_CORSAIR_4000D.jpg",
+    "pdf": "pdf/1788717366750_WKS_ALTE_PRESTAZIONI_INTEL_ULTRA_9_285K.pdf"
   }
 ]
