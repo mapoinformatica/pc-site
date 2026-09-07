@@ -190,5 +190,17 @@
     "descrizione": "Workstation Corsair 4000D con alimentatore 850 WATT 80plus -Windows 11 PRO - Tast+Mouse - CPU INTEL ULTRA 9 285K",
     "immagine": "img/1788717366750_CORSAIR_4000D.jpg",
     "pdf": "pdf/1788717366750_WKS_ALTE_PRESTAZIONI_INTEL_ULTRA_9_285K.pdf"
+  },
+  {
+    "id": 1788797033726,
+    "nome": "NUC ACEMAGIC",
+    "categoria": "desktop",
+    "cpu": "Ryzen 7 7735HS",
+    "ram": "24",
+    "disco": "512",
+    "prezzo": 469.99,
+    "descrizione": "NUC ACEMAGIC Ryzen 7 7735HS (4,75GHz) RAM: 24GB LPDDR5  SSD: 512GB SSD S.O. Win 11 Pro",
+    "immagine": "img/1788797033726_acemagic.avif",
+    "pdf": "pdf/1788797033726_ACEMAGIC.pdf"
   }
 ]
