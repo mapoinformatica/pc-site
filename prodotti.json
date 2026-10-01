@@ -61,15 +61,15 @@
   },
   {
     "id": 1787905450307,
-    "nome": "Galaxy Book 6",
+    "nome": "HP 15-fd0020sl",
     "categoria": "notebook",
-    "cpu": "Ultra 7 processor 355",
+    "cpu": "Intel Core 5 120U",
     "ram": "16",
     "disco": "512",
-    "prezzo": 879,
-    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA APERTA - LEGGERA AMMACCATURA NEL SOTTOSCOCCA IN ALLUMINIO - Galaxy Book6 Intel® Core™ Ultra 7 processor 355 - 16\" 1920 x 1200 (WUXGA) - 16 GB ddr5 - 512 SSD PC NP760VJG-KG3IT",
-    "immagine": "img/1787905450307_NP760VJG-KG3IT.avif",
-    "pdf": "pdf/1787905450307_NP760VJG-KG3IT.pdf"
+    "prezzo": 542.5,
+    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA APERTA - Intel Core 5 120U, RAM 16GB, SSD 512GB, Windows 11 15,6 Pollici IPS FullHD",
+    "immagine": "img/1787905450307_hp_15_fd.jpg",
+    "pdf": "pdf/1787905450307_fd_15.pdf"
   },
   {
     "id": 1787906039747,
