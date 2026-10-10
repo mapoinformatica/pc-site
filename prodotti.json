@@ -61,15 +61,15 @@
   },
   {
     "id": 1787905450307,
-    "nome": "HP 15-fd0020sl",
+    "nome": "Lenovo V15 G5 IRL",
     "categoria": "notebook",
-    "cpu": "Intel Core 5 120U",
+    "cpu": "Intel Core 7 240H",
     "ram": "16",
     "disco": "512",
-    "prezzo": 542.5,
-    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA APERTA - Intel Core 5 120U, RAM 16GB, SSD 512GB, Windows 11 15,6 Pollici IPS FullHD",
-    "immagine": "img/1787905450307_hp_15_fd.jpg",
-    "pdf": "pdf/1787905450307_fd_15.pdf"
+    "prezzo": 722.9,
+    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA ROVINATA - PRODOTTO SIGILLATO DI FABBRICA- Intel Core 7 240H, RAM 16GB, SSD 512GB, Windows 11 PRO  15,6 Pollici IPS FullHD",
+    "immagine": "img/1787905450307_Lenovo_V15_G5_IRL.pdf",
+    "pdf": "pdf/1787905450307_Lenovo_V15_G5_IRL.pdf"
   },
   {
     "id": 1787906039747,
