@@ -85,14 +85,14 @@
   },
   {
     "id": 1787907683699,
-    "nome": "HP 15-fc0022sl",
+    "nome": "ACER, Aspire Go 15 - Pure Silver NX.J7WEG.00G",
     "categoria": "notebook",
-    "cpu": "AMD Ryzen 7 7730U",
+    "cpu": "AMD Ryzen 7 5825U",
     "ram": "16",
     "disco": "512",
-    "prezzo": 525,
-    "descrizione": "EX DEMO PEZZO UNICO - NUOVO DI FABBRICA CON SCATOLA APERTA - AMD Ryzen 7 7730U, RAM 16GB, SSD 512GB, Windows 11 15,6 Pollici FULL HD",
-    "immagine": "img/1787907683699_hp_15_fd.jpg",
+    "prezzo": 555,
+    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA DANNEGGIATA - NX.J7WEG.00G  1xHDMI, Displayport tramite USB Type-C, 4xUSB 3.2 (1x Type-C Gen 2, 3x Type-A Gen 1), Ethernet/LAN, 3,5 mm AMD Ryzen 7 5825U 16gb  - 512ssd",
+    "immagine": "img/1787907683699_ACER_ASPIRE_GO_15.jpg",
     "pdf": "pdf/1787907683699_fd_15.pdf"
   },
   {
