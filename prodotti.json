@@ -202,5 +202,17 @@
     "descrizione": "NUC ACEMAGIC Ryzen 7 7735HS (4,75GHz) RAM: 16GB LPDDR5  SSD: 512GB SSD S.O. Win 11 Pro",
     "immagine": "img/1788797033726_acemagic.avif",
     "pdf": "pdf/1788797033726_ACEMAGIC.pdf"
+  },
+  {
+    "id": 1793742144333,
+    "nome": "NUC ACEMAGIC M5",
+    "categoria": "desktop",
+    "cpu": "i7-14650HX",
+    "ram": "32",
+    "disco": "1024",
+    "prezzo": 496.5,
+    "descrizione": "ACEMAGIC M5 Mini PC, Intel Core i7-14650HX (fino a 5.2GHz)，32GB RAM 1TB SSD\nTriplo Display 4K/WiFi 6/Win11 Pro",
+    "immagine": "img/1788797033726_acemagic.avif",
+    "pdf": "pdf/1788797033726_ACEMAGIC.pdf"
   }
 ]
