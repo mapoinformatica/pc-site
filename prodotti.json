@@ -60,18 +60,6 @@
     "pdf": "pdf/1787904915795_WKS_ULTRA_7_64_1024.pdf"
   },
   {
-    "id": 1787905450307,
-    "nome": "Lenovo V15 G5 IRL",
-    "categoria": "notebook",
-    "cpu": "Intel Core 7 240H",
-    "ram": "16",
-    "disco": "512",
-    "prezzo": 722.9,
-    "descrizione": "EX DEMO PEZZO UNICO - SCATOLA ROVINATA - PRODOTTO SIGILLATO DI FABBRICA- Intel Core 7 240H, RAM 16GB, SSD 512GB, Windows 11 PRO  15,6 Pollici IPS FullHD",
-    "immagine": "img/1787905450307_Lenovo_V15_G5_IRL.jpg",
-    "pdf": "pdf/1787905450307_Lenovo_V15_G5_IRL.pdf"
-  },
-  {
     "id": 1787906039747,
     "nome": "HP OMNIBOOK 5 AI 16-AF1009NLX",
     "categoria": "notebook",
